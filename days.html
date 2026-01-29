@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Little Master: Learn Days</title>
+    
+    <!-- Kids Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Bubblegum Sans', cursive;
+            background: linear-gradient(180deg, #FFF8E1 0%, #FFECB3 100%); /* Sunny Day Look */
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            color: #333;
+        }
+
+        /* --- HOME BUTTON --- */
+        .home-btn {
+            position: absolute; top: 15px; left: 15px;
+            background: white; border: none; border-radius: 50%;
+            width: 45px; height: 45px; font-size: 24px;
+            cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+            z-index: 200; display: flex; align-items: center;
+            justify-content: center; text-decoration: none;
+            border: 2px solid #FF9800;
+        }
+        .home-btn:active { transform: translateY(3px); box-shadow: none; }
+
+        /* --- MASCOT --- */
+        .mascot-container {
+            margin-top: 10px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        .mascot-display {
+            height: 100px; width: auto; 
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1));
+        }
+
+        /* --- MAIN CARD --- */
+        .flashcard {
+            background: white;
+            width: 85%;
+            max-width: 350px;
+            height: 320px;
+            border-radius: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            border: 6px solid #FFCC80;
+            position: relative;
+            margin-top: 10px;
+            transition: transform 0.3s;
+        }
+
+        /* Number Badge (e.g., 1/7) */
+        .day-number-badge {
+            background: #FF9800;
+            color: white;
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-size: 20px;
+            position: absolute;
+            top: -20px;
+            box-shadow: 0 4px 0 #E65100;
+        }
+
+        /* Day Text */
+        .day-text-eng {
+            font-size: 65px;
+            color: #E65100;
+            margin: 0;
+            line-height: 1.2;
+            text-shadow: 2px 2px 0px #FFE0B2;
+            cursor: pointer;
+        }
+
+        .day-text-hin {
+            font-size: 35px;
+            color: #8D6E63;
+            margin-top: 10px;
+            font-family: sans-serif; /* Fallback for Hindi */
+        }
+
+        /* Sound Icon */
+        .sound-icon {
+            font-size: 30px;
+            margin-top: 20px;
+            background: #FFF3E0;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .sound-icon:active { transform: scale(0.9); }
+
+        /* --- NAVIGATION CONTROLS --- */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            width: 85%;
+            max-width: 350px;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            background: #FF9800;
+            color: white;
+            border: none;
+            width: 70px; height: 70px;
+            border-radius: 50%;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #E65100;
+            font-family: 'Bubblegum Sans', cursive;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-btn:active { transform: translateY(5px); box-shadow: none; }
+        .nav-btn:disabled { background: #ccc; box-shadow: none; cursor: default; }
+
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="home-btn">🏠</a>
+
+    <!-- Header Title -->
+    <h1 style="color: #EF6C00; margin: 10px 0 5px 0; font-size: 36px; text-shadow: 2px 2px 0 white;">Days of Week</h1>
+
+    <!-- Mascot -->
+    <div class="mascot-container">
+        <img src="talkingof.PNG" id="mascotImage" class="mascot-display" alt="Mascot">
+    </div>
+
+    <!-- Main Learning Card -->
+    <div class="flashcard" id="mainCard">
+        <div class="day-number-badge" id="dayNum">Day 1</div>
+        
+        <div class="day-text-eng" id="engText" onclick="playCurrentSound()">Sunday</div>
+        <div class="day-text-hin" id="hinText">रविवार</div>
+
+        <div class="sound-icon" onclick="playCurrentSound()">🔊</div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="controls">
+        <button class="nav-btn" id="prevBtn" onclick="changeDay(-1)">❮</button>
+        <button class="nav-btn" id="nextBtn" onclick="changeDay(1)">❯</button>
+    </div>
+
+    <script>
+        // --- DATA ---
+        // Color har day ke liye alag taaki bacche ko maza aaye
+        const daysData = [
+            { id: 1, eng: "Sunday", hin: "रविवार", color: "#F44336" },    // Red
+            { id: 2, eng: "Monday", hin: "सोमवार", color: "#FF9800" },    // Orange
+            { id: 3, eng: "Tuesday", hin: "मंगलवार", color: "#FFEB3B" },  // Yellow
+            { id: 4, eng: "Wednesday", hin: "बुधवार", color: "#4CAF50" }, // Green
+            { id: 5, eng: "Thursday", hin: "गुरुवार", color: "#2196F3" }, // Blue
+            { id: 6, eng: "Friday", hin: "शुक्रवार", color: "#9C27B0" },  // Purple
+            { id: 7, eng: "Saturday", hin: "शनिवार", color: "#E91E63" }   // Pink
+        ];
+
+        let currentIndex = 0;
+        let currentAudio = null;
+
+        // Init
+        window.onload = function() {
+            updateUI();
+            // Thoda ruk ke sound play karein taaki page load ho jaye
+            setTimeout(playCurrentSound, 500);
+        };
+
+        function updateUI() {
+            const data = daysData[currentIndex];
+
+            // Update Text
+            document.getElementById('dayNum').innerText = "Day " + data.id;
+            document.getElementById('engText').innerText = data.eng;
+            document.getElementById('hinText').innerText = data.hin;
+
+            // Change Colors dynamically
+            document.getElementById('engText').style.color = data.color;
+            document.querySelector('.flashcard').style.borderColor = data.color;
+            document.getElementById('dayNum').style.backgroundColor = data.color;
+            document.getElementById('dayNum').style.boxShadow = "0 4px 0 " + adjustColor(data.color, -30); // Darker shade for shadow
+        }
+
+        function changeDay(direction) {
+            currentIndex += direction;
+
+            // Loop logic (Sunday ke peeche Saturday, Saturday ke aage Sunday)
+            if (currentIndex < 0) {
+                currentIndex = daysData.length - 1;
+            } else if (currentIndex >= daysData.length) {
+                currentIndex = 0;
+            }
+
+            // Animation Effect
+            const card = document.getElementById('mainCard');
+            card.style.transform = "scale(0.9)";
+            setTimeout(() => {
+                updateUI();
+                card.style.transform = "scale(1)";
+                playCurrentSound();
+            }, 150);
+        }
+
+        function playCurrentSound() {
+            const data = daysData[currentIndex];
+            const mascot = document.getElementById('mascotImage');
+            
+            // Mascot Talking Animation
+            if(mascot) mascot.src = "talkingof.gif";
+
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+
+            // File Name format: sundaydays.mp3 (Jaisa aapne generate kiya tha)
+            let fileName = data.eng.toLowerCase() + "days.mp3";
+
+            currentAudio = new Audio(fileName);
+            
+            currentAudio.onended = function() {
+                if(mascot) mascot.src = "talkingof.PNG";
+            };
+            
+            currentAudio.onerror = function() {
+                console.log("Audio file not found: " + fileName);
+                if(mascot) mascot.src = "talkingof.PNG";
+            };
+
+            currentAudio.play().catch(e => {
+                if(mascot) mascot.src = "talkingof.PNG";
+            });
+        }
+
+        // Helper function to darken color for shadow
+        function adjustColor(color, amount) {
+            return '#' + color.replace(/^#/, '').replace(/../g, color => ('0'+Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
+        }
+
+    </script>
+</body>
+</html>
