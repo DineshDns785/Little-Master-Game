@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Little Master: Family</title>
+    
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Confetti Script -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            /* Pink Theme for Family */
+            background: linear-gradient(180deg, #F8BBD0 0%, #F06292 100%);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            color: #333;
+        }
+
+        /* --- HOME BUTTON 🏠 --- */
+        .home-btn {
+            position: absolute; top: 15px; left: 15px;
+            background: white; border: 3px solid #fff; border-radius: 50%;
+            width: 55px; height: 55px; font-size: 30px;
+            cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 200; display: flex; align-items: center;
+            justify-content: center; text-decoration: none;
+            transition: transform 0.1s;
+        }
+        .home-btn:active { transform: scale(0.9); }
+
+        /* --- START SCREEN --- */
+        #startScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, #EC407A 0%, #880E4F 100%);
+            z-index: 10000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+        }
+
+        .play-btn {
+            background: #FFEB3B; color: #333; font-size: 28px;
+            padding: 15px 50px; border: none; border-radius: 50px;
+            font-family: 'Fredoka', sans-serif; font-weight: bold;
+            box-shadow: 0 6px 0 #FBC02D; cursor: pointer;
+            animation: pulse 1.5s infinite; margin-top: 10px;
+        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* --- GAME LAYOUT --- */
+        .game-wrapper {
+            flex: 1; display: none; flex-direction: column;
+            align-items: center; justify-content: center;
+            width: 100%; padding-bottom: 60px;
+        }
+
+        /* Mascot */
+        .mascot-display {
+            height: 100px; margin-bottom: 10px;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
+            transition: transform 0.2s;
+        }
+        .mascot-jump { animation: jump 0.5s; }
+        @keyframes jump { 0%,100% {transform:translateY(0);} 50% {transform:translateY(-20px);} }
+
+        /* Card container */
+        .card {
+            background: white; padding: 15px; border-radius: 30px;
+            width: 90%; max-width: 360px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 5px solid #fff;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+
+        /* TEXT AREA */
+        .question-area {
+            background: #FCE4EC;
+            border-radius: 20px;
+            padding: 15px 5px;
+            margin-bottom: 20px;
+            border: 2px dashed #EC407A;
+            min-height: 100px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+
+        /* Big English Word */
+        .spelling-text {
+            font-size: 45px; font-weight: 700; color: #D81B60;
+            letter-spacing: 1px; line-height: 1.1; margin: 0;
+            text-shadow: 2px 2px 0 #F8BBD0; text-transform: uppercase;
+        }
+
+        /* Small Hindi Word */
+        .hindi-text {
+            font-size: 28px; color: #880E4F; margin-top: 5px;
+            font-weight: 500; font-family: sans-serif;
+        }
+
+        /* Success Message */
+        .success-text {
+            font-size: 50px; color: #4CAF50; font-weight: bold;
+            animation: popIn 0.3s;
+        }
+        @keyframes popIn { from {transform:scale(0);} to {transform:scale(1);} }
+
+        /* OPTIONS GRID */
+        .options-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+        }
+
+        .option-btn {
+            background: white; border: 3px solid #E0E0E0;
+            border-radius: 20px; height: 100px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 5px 0 #E0E0E0;
+            transition: transform 0.1s;
+        }
+        .option-btn:active { transform: translateY(5px); box-shadow: none; }
+
+        .emoji-mode { font-size: 65px; }
+        .img-mode { max-width: 85%; max-height: 85%; object-fit: contain; }
+
+        /* MODALS */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); display: none;
+            justify-content: center; align-items: center; z-index: 11000;
+            backdrop-filter: blur(5px);
+        }
+        .modal-box {
+            background: white; padding: 30px; border-radius: 25px;
+            text-align: center; width: 85%; max-width: 320px;
+            box-shadow: 0 20px 0 rgba(0,0,0,0.1);
+            animation: slideUp 0.3s;
+        }
+        
+        .modal-icon { font-size: 70px; margin-bottom: 10px; display: block; }
+        .modal-title { font-size: 35px; margin: 0; }
+        .txt-wrong { color: #F44336; }
+
+        .modal-btn {
+            padding: 12px 40px; font-size: 22px; border: none; border-radius: 50px;
+            color: white; cursor: pointer; font-family: 'Fredoka', sans-serif;
+            margin-top: 15px; width: 80%; box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+        }
+        .btn-next { background: #2196F3; } 
+        .btn-retry { background: #FF9800; }
+
+        @keyframes slideUp { from{transform:translateY(50px); opacity:0;} to{transform:translateY(0); opacity:1;} }
+        
+    </style>
+</head>
+<body>
+
+    <!-- ADS (Popunder) REMOVED -->
+
+    <!-- START SCREEN -->
+    <div id="startScreen">
+        <!-- Home Button -->
+        <a href="index.html" class="home-btn">🏠</a>
+        
+        <h1 style="color: #fff; font-size: 35px; margin-bottom: 5px;">Read & Find</h1>
+        <p style="color: #F8BBD0; margin-top: 0; font-size: 20px;">Family Edition ❤️</p>
+        
+        <!-- Ad Box Removed -->
+        
+        <button class="play-btn" onclick="startGame()">▶ Play</button>
+    </div>
+
+    <!-- GAME AREA -->
+    <div class="game-wrapper" id="gameWrapper">
+        <!-- Home Button -->
+        <a href="index.html" class="home-btn">🏠</a>
+        
+        <!-- MASCOT -->
+        <img src="talkingof.PNG" id="mascotImage" class="mascot-display" alt="Mascot">
+        
+        <div class="card">
+            <div style="text-align: left; font-size: 14px; color: #888; margin-bottom: 5px;">Read this word:</div>
+            
+            <!-- QUESTION AREA -->
+            <div class="question-area" id="qArea">
+                <!-- Content will be injected by JS -->
+                <div class="spelling-text" id="qText">FATHER</div>
+                <div class="hindi-text" id="qHindi">पिता</div>
+            </div>
+
+            <!-- OPTIONS AREA -->
+            <div class="options-grid" id="optionsBox"></div>
+        </div>
+    </div>
+
+    <!-- BOTTOM AD REMOVED -->
+
+    <!-- MODAL: WRONG -->
+    <div class="modal-overlay" id="wrongModal">
+        <div class="modal-box">
+            <span class="modal-icon">😢</span>
+            <h2 class="modal-title txt-wrong">Wrong!</h2>
+            <button class="modal-btn btn-retry" onclick="resetLevel()">Try Again</button>
+        </div>
+    </div>
+
+    <!-- ALL DONE MODAL -->
+    <div class="modal-overlay" id="allDoneModal">
+        <div class="modal-box">
+            <span class="modal-icon">🏆</span>
+            <h2 class="modal-title" style="color:#FFC107">Winner!</h2>
+            <p>You learned all family members!</p>
+            <button class="modal-btn btn-next" onclick="restartFullGame()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA LIST (FAMILY) ---
+        // Emoji use kar rahe hain taaki PNG ki zarurat kam pade.
+        const gameData = [
+            { en: "FATHER", hi: "पिता", img: "👨" },
+            { en: "MOTHER", hi: "मां", img: "👩" },
+            { en: "BROTHER", hi: "भाई", img: "👦" },
+            { en: "SISTER", hi: "बहन", img: "👧" },
+            { en: "GRANDFATHER", hi: "दादा", img: "👴" },
+            { en: "GRANDMOTHER", hi: "दादी", img: "👵" },
+            { en: "BABY", hi: "बच्चा", img: "👶" },
+            { en: "UNCLE", hi: "चाचा", img: "👨‍🦱" },
+            { en: "AUNT", hi: "चाची", img: "👩‍🦱" },
+            { en: "FAMILY", hi: "परिवार", img: "👨‍👩‍👧‍👦" },
+            { en: "FRIEND", hi: "दोस्त", img: "🧑‍🤝‍🧑" }
+        ];
+
+        let currentIndex = 0;
+
+        // --- SPEECH SYSTEM ---
+        function speakWord(text) {
+            const mascot = document.getElementById('mascotImage');
+            if(mascot) mascot.src = "talkingof.gif"; 
+
+            let cleanText = text.toLowerCase().replace(/ /g, "");
+            let fileName;
+
+            // Logic: Agar Family word hai, to "family.mp3" jodo
+            const isFamily = gameData.some(item => item.en === text);
+
+            if (isFamily) {
+                fileName = cleanText + "family.mp3"; // e.g. fatherfamily.mp3
+            } else {
+                fileName = cleanText + ".mp3"; // e.g. correct.mp3
+            }
+            
+            let audio = new Audio(fileName);
+
+            audio.onended = () => { if(mascot) mascot.src = "talkingof.PNG"; };
+            
+            audio.onerror = () => {
+                // Fallback TTS
+                const synth = window.speechSynthesis;
+                const u = new SpeechSynthesisUtterance(text);
+                u.rate = 0.8;
+                u.onend = () => { if(mascot) mascot.src = "talkingof.PNG"; };
+                synth.speak(u);
+            };
+
+            audio.play().catch(e => {
+                const synth = window.speechSynthesis;
+                const u = new SpeechSynthesisUtterance(text);
+                u.rate = 0.8;
+                u.onend = () => { if(mascot) mascot.src = "talkingof.PNG"; };
+                synth.speak(u);
+            });
+        }
+
+        // --- GAME LOGIC ---
+        function startGame() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('gameWrapper').style.display = 'flex';
+            const saved = localStorage.getItem('learnFamilyLevel');
+            if(saved) currentIndex = parseInt(saved);
+            loadLevel();
+        }
+
+        function loadLevel() {
+            if(currentIndex >= gameData.length) {
+                document.getElementById('allDoneModal').style.display = 'flex';
+                if(typeof confetti === 'function') confetti();
+                return;
+            }
+
+            const correct = gameData[currentIndex];
+            
+            // 1. Show Text Area
+            const qArea = document.getElementById('qArea');
+            qArea.innerHTML = `<div class="spelling-text" id="qText">${correct.en}</div><div class="hindi-text" id="qHindi">${correct.hi}</div>`;
+
+            // Speak
+            setTimeout(() => speakWord(correct.en), 300);
+
+            // 2. Options
+            let options = [correct];
+            while(options.length < 4) {
+                let r = gameData[Math.floor(Math.random() * gameData.length)];
+                if(r.en !== correct.en && !options.includes(r)) options.push(r);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const box = document.getElementById('optionsBox');
+            box.innerHTML = "";
+
+            options.forEach(item => {
+                const btn = document.createElement('div');
+                btn.className = 'option-btn';
+                
+                // Sab Emojis hain isliye simple
+                btn.innerHTML = `<div class="emoji-mode">${item.img}</div>`;
+
+                btn.onclick = () => {
+                    if(item.en === correct.en) {
+                        handleSuccess(correct);
+                    } else {
+                        handleWrong(btn);
+                    }
+                };
+                box.appendChild(btn);
+            });
+        }
+
+        function handleSuccess(correct) {
+            if(typeof confetti === 'function') confetti();
+            
+            const qArea = document.getElementById('qArea');
+            qArea.innerHTML = `<div class="success-text">Correct!</div>`;
+
+            const mascot = document.getElementById('mascotImage');
+            mascot.classList.add('mascot-jump');
+            setTimeout(() => mascot.classList.remove('mascot-jump'), 600);
+            
+            speakWord("Good Job!");
+
+            setTimeout(() => {
+                currentIndex++;
+                localStorage.setItem('learnFamilyLevel', currentIndex);
+                loadLevel();
+            }, 1500);
+        }
+
+        function handleWrong(btnElement) {
+            speakWord("Wrong");
+            btnElement.style.background = "#FFCDD2";
+            btnElement.style.borderColor = "#F44336";
+            document.getElementById('wrongModal').style.display = 'flex';
+        }
+
+        function resetLevel() {
+            document.getElementById('wrongModal').style.display = 'none';
+            const btns = document.querySelectorAll('.option-btn');
+            btns.forEach(b => {
+                b.style.background = 'white';
+                b.style.borderColor = '#E0E0E0';
+            });
+            speakWord(gameData[currentIndex].en);
+        }
+
+        function restartFullGame() {
+            currentIndex = 0;
+            localStorage.setItem('learnFamilyLevel', 0);
+            location.reload();
+        }
+    </script>
+</body>
+</html>
