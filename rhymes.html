@@ -1,0 +1,277 @@
+<!DOCTYPE html>  <html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
+    <title>Little Master: Top 10 Rhymes</title>  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">  
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>  
+
+<style>  
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }  
+    body {  
+        font-family: 'Fredoka', sans-serif;  
+        background: linear-gradient(180deg, #9575CD 0%, #512DA8 100%);  
+        height: 100vh; margin: 0; display: flex;  
+        flex-direction: column; align-items: center; overflow: hidden; color: #333;  
+    }  
+      
+    /* Home Button */  
+    .home-btn {  
+        position: absolute; top: 15px; left: 15px; background: white;  
+        border: 3px solid #fff; border-radius: 50%; width: 55px; height: 55px;  
+        font-size: 30px; cursor: pointer; z-index: 200; display: flex;  
+        align-items: center; justify-content: center; text-decoration: none;  
+    }  
+    .home-btn:active { transform: scale(0.9); }  
+      
+    /* Start Screen */  
+    #startScreen {  
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;  
+        background: linear-gradient(180deg, #7E57C2 0%, #311B92 100%);  
+        z-index: 10000; display: flex; flex-direction: column;  
+        justify-content: center; align-items: center; text-align: center;  
+    }  
+    .play-btn {  
+        background: #FFEB3B; color: #333; font-size: 28px; padding: 15px 50px;  
+        border: none; border-radius: 50px; font-weight: bold; cursor: pointer;  
+        animation: pulse 1.5s infinite; margin-top: 10px;  
+    }  
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }  
+
+    /* Game Wrapper */  
+    .game-wrapper {  
+        flex: 1; display: none; flex-direction: column;  
+        align-items: center; justify-content: center; width: 100%; padding-bottom: 60px;  
+    }  
+    .mascot-display { height: 90px; margin-bottom: 5px; transition: transform 0.2s; }  
+    .mascot-dance { animation: dance 1s infinite; }  
+    @keyframes dance { 0%,100% {transform:rotate(0deg);} 25% {transform:rotate(-10deg);} 75% {transform:rotate(10deg);} }  
+
+    /* Card */  
+    .card {  
+        background: white; padding: 20px; border-radius: 30px; width: 90%;  
+        max-width: 360px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);  
+        border: 5px solid #fff; display: flex; flex-direction: column;  
+        justify-content: center; position: relative;  
+    }  
+    .rhyme-icon { font-size: 60px; margin-bottom: 5px; animation: float 3s infinite; }  
+    @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }  
+      
+    .rhyme-title { font-size: 26px; color: #673AB7; margin: 0; font-weight: bold; }  
+      
+    /* Language Toggle Buttons */  
+    .lang-controls {  
+        display: flex; justify-content: center; gap: 10px; margin: 10px 0;  
+    }  
+    .lang-btn {  
+        padding: 8px 15px; border: none; border-radius: 20px;  
+        font-family: 'Fredoka', sans-serif; font-weight: bold; cursor: pointer;  
+        font-size: 14px; transition: all 0.2s;  
+    }  
+    .lang-active { background: #673AB7; color: white; box-shadow: 0 4px 0 #4527A0; }  
+    .lang-inactive { background: #E0E0E0; color: #666; box-shadow: 0 4px 0 #BDBDBD; }  
+    .lang-inactive:active { transform: translateY(4px); box-shadow: none; }  
+
+    /* Lyrics Box */  
+    .rhyme-lyrics {  
+        background: #EDE7F6; padding: 15px; border-radius: 15px;  
+        margin-bottom: 15px; font-size: 16px; color: #512DA8; height: 120px;  
+        overflow-y: auto; line-height: 1.5; border: 2px dashed #B39DDB;  
+        white-space: pre-line;  
+    }  
+
+    /* Controls */  
+    .controls { display: flex; justify-content: center; gap: 20px; align-items: center; }  
+    .ctrl-btn {  
+        border: none; border-radius: 50%; cursor: pointer; width: 50px; height: 50px;  
+        font-size: 24px; display: flex; align-items: center; justify-content: center;  
+        box-shadow: 0 4px 0 rgba(0,0,0,0.2); transition: transform 0.1s;  
+    }  
+    .ctrl-btn:active { transform: scale(0.95); }  
+    .btn-play { background: #FF4081; color: white; width: 70px; height: 70px; font-size: 35px; }  
+    .btn-nav { background: #FFEB3B; color: #333; }  
+
+</style>
+
+</head>  
+<body>
+
+
+<!-- START SCREEN -->  
+<div id="startScreen">  
+    <a href="index.html" class="home-btn">🏠</a>  
+    <h1 style="color: #fff;">Top 10 Rhymes 🎶</h1>  
+    <p style="color: #D1C4E9;">English & Hindi Poems</p>  
+    <button class="play-btn" onclick="startPlayer()">▶ Play</button>  
+</div>  
+
+<!-- MAIN GAME -->  
+<div class="game-wrapper" id="gameWrapper">  
+    <a href="index.html" class="home-btn">🏠</a>  
+    <img src="talkingof.PNG" id="mascotImage" class="mascot-display" alt="Mascot">  
+      
+    <div class="card">  
+        <div class="rhyme-icon" id="rhymeIcon">🌟</div>  
+        <h2 class="rhyme-title" id="rhymeTitle">Twinkle Twinkle</h2>  
+          
+        <!-- Language Buttons -->  
+        <div class="lang-controls">  
+            <button class="lang-btn lang-active" id="btnEn" onclick="setLang('en')">English</button>  
+            <button class="lang-btn lang-inactive" id="btnHi" onclick="setLang('hi')">Hindi</button>  
+        </div>  
+
+        <div class="rhyme-lyrics" id="rhymeLyrics">Loading...</div>  
+
+        <div class="controls">  
+            <button class="ctrl-btn btn-nav" onclick="prevRhyme()">⏮</button>  
+            <button class="ctrl-btn btn-play" id="playPauseBtn" onclick="togglePlay()">▶</button>  
+            <button class="ctrl-btn btn-nav" onclick="nextRhyme()">⏭</button>  
+        </div>  
+    </div>  
+</div>  
+
+<script>  
+    // --- TOP 10 RHYMES DATA ---  
+    const rhymes = [  
+        {   
+            n: "Twinkle Twinkle", i: "🌟", f: "twinkletwinkle",  
+            lEn: "Twinkle, twinkle, little star,\nHow I wonder what you are!\nUp above the world so high,\nLike a diamond in the sky.",  
+            lHi: "ट्विंकल ट्विंकल लिटिल स्टार,\nहाउ आई वंडर व्हाट यू आर!\nअप अबव द वर्ल्ड सो हाई,\nलाइक अ डायमंड इन द स्काई।"  
+        },  
+        {   
+            n: "Johny Johny", i: "👶", f: "johnyjohny",  
+            lEn: "Johny Johny? Yes Papa!\nEating sugar? No Papa!\nTelling lies? No Papa!\nOpen your mouth! Ha Ha Ha!",  
+            lHi: "जॉनी जॉनी? यस पापा!\nईटिंग शुगर? नो पापा!\nटेलिंग लाइज़? नो पापा!\nओपन योर माउथ! हा हा हा!"  
+        },  
+        {   
+            n: "Baa Baa Black Sheep", i: "🐑", f: "baabaablacksheep",  
+            lEn: "Baa, baa, black sheep,\nHave you any wool?\nYes sir, yes sir,\nThree bags full.",  
+            lHi: "बाबा ब्लैक शीप,\nहैव यू एनी वूल?\nयस सर, यस सर,\nथ्री बैग्स फुल।"  
+        },  
+        {   
+            n: "Rain Rain Go Away", i: "🌧️", f: "rainraingoaway",  
+            lEn: "Rain, rain, go away,\nCome again another day.\nLittle Johnny wants to play,\nRain, rain, go away.",  
+            lHi: "रेन रेन गो अवे,\nकम अगेन अनदर डे।\nलिटिल जॉनी वांट्स टू प्ले,\nरेन रेन गो अवे।"  
+        },  
+        {   
+            n: "Humpty Dumpty", i: "🥚", f: "humptydumpty",  
+            lEn: "Humpty Dumpty sat on a wall,\nHumpty Dumpty had a great fall.\nAll the king's horses and all the king's men,\nCouldn't put Humpty together again.",  
+            lHi: "हम्प्टी डम्प्टी सैट ऑन अ वॉल,\nहम्प्टी डम्प्टी हैड अ ग्रेट फॉल।\nऑल द किंग्स हॉर्सस एंड ऑल द किंग्स मैन,\nकुडंट पुट हम्प्टी टुगेदर अगेन।"  
+        },  
+        {   
+            n: "Jack and Jill", i: "🏔️", f: "jackandjill",  
+            lEn: "Jack and Jill went up the hill\nTo fetch a pail of water.\nJack fell down and broke his crown,\nAnd Jill came tumbling after.",  
+            lHi: "जैक एंड जिल वेंट अप द हिल\nटू फेच अ पेल ऑफ वाटर।\nजैक फेल डाउन एंड ब्रोक हिज़ क्राउन,\nएंड जिल केम टम्बलिंग आफ्टर।"  
+        },  
+        {   
+            n: "Ding Dong Bell", i: "🔔", f: "dingdongbell",  
+            lEn: "Ding, dong, bell,\nPussy's in the well.\nWho put her in?\nLittle Johnny Flynn.",  
+            lHi: "डिंग डोंग बेल,\nपुसी इज़ इन द वेल।\nहू पुट हर इन?\nलिटिल जॉनी फ्लिन।"  
+        },  
+        {   
+            n: "Hickory Dickory Dock", i: "🕰️", f: "hickorydickorydock",  
+            lEn: "Hickory, dickory, dock,\nThe mouse ran up the clock.\nThe clock struck one,\nThe mouse ran down,\nHickory, dickory, dock.",  
+            lHi: "हिकरी डिकरी डॉक,\nद माउस रैन अप द क्लॉक।\nद क्लॉक स्ट्रक वन,\nद माउस रैन डाउन,\nहिकरी डिकरी डॉक।"  
+        },  
+        {   
+            n: "Ring a Ring o Roses", i: "🌹", f: "ringaringoroses",  
+            lEn: "Ring-a-ring o' roses,\nA pocket full of posies,\nA-tishoo! A-tishoo!\nWe all fall down.",  
+            lHi: "रिंग-अ-रिंग ओ रोज़ेस,\nअ पॉकेट फुल ऑफ़ पोज़िस,\nअ-टिशू! अ-टिशू!\nवी ऑल फॉल डाउन।"  
+        },  
+        {   
+            n: "Mary Had a Little Lamb", i: "🐑", f: "maryhadalittlelamb",  
+            lEn: "Mary had a little lamb,\nIts fleece was white as snow.\nAnd everywhere that Mary went,\nThe lamb was sure to go.",  
+            lHi: "मैरी हैड अ लिटिल लैम्ब,\nइट्स फ्लीस वॉज़ वाइट एज़ स्नो।\nएंड एवरीव्हेयर दैट मैरी वेंट,\nद लैम्ब वॉज़ श्योर टू गो।"  
+        }  
+    ];  
+
+    let currentIndex = 0;  
+    let currentLang = 'en'; // Default English  
+    let audio = new Audio();  
+    let isPlaying = false;  
+
+    function startPlayer() {  
+        document.getElementById('startScreen').style.display = 'none';  
+        document.getElementById('gameWrapper').style.display = 'flex';  
+        loadRhyme(currentIndex);  
+    }  
+
+    function setLang(lang) {  
+        if (currentLang === lang) return;  
+        currentLang = lang;  
+          
+        // Toggle Buttons  
+        if (lang === 'en') {  
+            document.getElementById('btnEn').className = "lang-btn lang-active";  
+            document.getElementById('btnHi').className = "lang-btn lang-inactive";  
+        } else {  
+            document.getElementById('btnEn').className = "lang-btn lang-inactive";  
+            document.getElementById('btnHi').className = "lang-btn lang-active";  
+        }  
+        loadRhyme(currentIndex);  
+    }  
+
+    function loadRhyme(index) {  
+        audio.pause();  
+        const current = rhymes[index];  
+          
+        document.getElementById('rhymeTitle').innerText = current.n;  
+        document.getElementById('rhymeIcon').innerText = current.i;  
+          
+        // Set Lyrics & Audio based on Language  
+        if (currentLang === 'en') {  
+            document.getElementById('rhymeLyrics').innerText = current.lEn;  
+            audio.src = current.f + "_en.mp3";  
+        } else {  
+            document.getElementById('rhymeLyrics').innerText = current.lHi;  
+            audio.src = current.f + "_hi.mp3";  
+        }  
+          
+        audio.load();  
+        isPlaying = false;  
+        updatePlayBtn();  
+          
+        setTimeout(() => togglePlay(), 500);  
+        document.getElementById('mascotImage').classList.remove('mascot-dance');  
+    }  
+
+    function togglePlay() {  
+        if (isPlaying) {  
+            audio.pause();  
+            isPlaying = false;  
+            document.getElementById('mascotImage').classList.remove('mascot-dance');  
+        } else {  
+            audio.play().catch(e => console.log("Audio Error:", e));  
+            isPlaying = true;  
+            document.getElementById('mascotImage').classList.add('mascot-dance');  
+        }  
+        updatePlayBtn();  
+    }  
+
+    function updatePlayBtn() {  
+        document.getElementById('playPauseBtn').innerText = isPlaying ? "⏸" : "▶";  
+    }  
+
+    function nextRhyme() {  
+        currentIndex = (currentIndex + 1) % rhymes.length;  
+        loadRhyme(currentIndex);  
+    }  
+
+    function prevRhyme() {  
+        currentIndex = (currentIndex - 1 + rhymes.length) % rhymes.length;  
+        loadRhyme(currentIndex);  
+    }  
+
+    audio.onended = function() {  
+        if(typeof confetti === 'function') confetti({ spread: 60, origin: { y: 0.8 } });  
+        setTimeout(nextRhyme, 2000);  
+    };  
+
+    audio.onerror = function() {  
+        console.log("Audio Missing: " + audio.src);  
+        isPlaying = false;  
+        updatePlayBtn();  
+    };  
+</script>
+
+</body>  
+</html>

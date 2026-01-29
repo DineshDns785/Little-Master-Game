@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Little Master: Months</title>
+    
+    <!-- Kids Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Bubblegum Sans', cursive;
+            background: linear-gradient(180deg, #E0F2F1 0%, #B2DFDB 100%);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            color: #333;
+        }
+
+        .home-btn {
+            position: absolute; top: 15px; left: 15px;
+            background: white; border: none; border-radius: 50%;
+            width: 45px; height: 45px; font-size: 24px;
+            cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+            z-index: 200; display: flex; align-items: center;
+            justify-content: center; text-decoration: none;
+            border: 2px solid #009688;
+        }
+        .home-btn:active { transform: translateY(3px); box-shadow: none; }
+
+        .mascot-container {
+            margin-top: 10px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        .mascot-display {
+            height: 100px; width: auto; 
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1));
+        }
+
+        .flashcard {
+            background: white;
+            width: 85%;
+            max-width: 350px;
+            height: 320px;
+            border-radius: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            border: 6px solid #80CBC4;
+            position: relative;
+            margin-top: 10px;
+            transition: transform 0.3s;
+        }
+
+        .month-number-badge {
+            background: #009688;
+            color: white;
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-size: 20px;
+            position: absolute;
+            top: -20px;
+            box-shadow: 0 4px 0 #00695C;
+        }
+
+        .month-text-eng {
+            font-size: 55px;
+            color: #00796B;
+            margin: 0;
+            line-height: 1.2;
+            text-shadow: 2px 2px 0px #E0F2F1;
+            cursor: pointer;
+        }
+
+        .month-text-hin {
+            font-size: 35px;
+            color: #555;
+            margin-top: 10px;
+            font-family: sans-serif;
+        }
+
+        .sound-icon {
+            font-size: 30px;
+            margin-top: 20px;
+            background: #E0F2F1;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .sound-icon:active { transform: scale(0.9); }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            width: 85%;
+            max-width: 350px;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            background: #009688;
+            color: white;
+            border: none;
+            width: 70px; height: 70px;
+            border-radius: 50%;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #00695C;
+            font-family: 'Bubblegum Sans', cursive;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-btn:active { transform: translateY(5px); box-shadow: none; }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="home-btn">🏠</a>
+
+    <h1 style="color: #00796B; margin: 10px 0 5px 0; font-size: 36px; text-shadow: 2px 2px 0 white;">Months of Year</h1>
+
+    <div class="mascot-container">
+        <img src="talkingof.PNG" id="mascotImage" class="mascot-display" alt="Mascot">
+    </div>
+
+    <div class="flashcard" id="mainCard">
+        <div class="month-number-badge" id="monthNum">Month 1</div>
+        <div class="month-text-eng" id="engText" onclick="playCurrentSound()">January</div>
+        <div class="month-text-hin" id="hinText">जनवरी</div>
+        <div class="sound-icon" onclick="playCurrentSound()">🔊</div>
+    </div>
+
+    <div class="controls">
+        <button class="nav-btn" onclick="changeMonth(-1)">❮</button>
+        <button class="nav-btn" onclick="changeMonth(1)">❯</button>
+    </div>
+
+    <script>
+        const monthsData = [
+            { id: 1, eng: "January", hin: "जनवरी", color: "#0288D1" },
+            { id: 2, eng: "February", hin: "फरवरी", color: "#E91E63" },
+            { id: 3, eng: "March", hin: "मार्च", color: "#4CAF50" },
+            { id: 4, eng: "April", hin: "अप्रैल", color: "#8BC34A" },
+            { id: 5, eng: "May", hin: "मई", color: "#FFEB3B" },
+            { id: 6, eng: "June", hin: "जून", color: "#FFC107" },
+            { id: 7, eng: "July", hin: "जुलाई", color: "#FF9800" },
+            { id: 8, eng: "August", hin: "अगस्त", color: "#FF5722" },
+            { id: 9, eng: "September", hin: "सितंबर", color: "#795548" },
+            { id: 10, eng: "October", hin: "अक्टूबर", color: "#FF9800" },
+            { id: 11, eng: "November", hin: "नवंबर", color: "#607D8B" },
+            { id: 12, eng: "December", hin: "दिसंबर", color: "#3F51B5" }
+        ];
+
+        let currentIndex = 0;
+        let currentAudio = null;
+
+        window.onload = function() {
+            updateUI();
+            setTimeout(playCurrentSound, 500);
+        };
+
+        function updateUI() {
+            const data = monthsData[currentIndex];
+            document.getElementById('monthNum').innerText = "Month " + data.id;
+            document.getElementById('engText').innerText = data.eng;
+            document.getElementById('hinText').innerText = data.hin;
+
+            document.getElementById('engText').style.color = data.color;
+            document.querySelector('.flashcard').style.borderColor = data.color;
+            document.getElementById('monthNum').style.backgroundColor = data.color;
+            document.getElementById('monthNum').style.boxShadow = "0 4px 0 " + adjustColor(data.color, -30);
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.style.backgroundColor = data.color;
+                btn.style.boxShadow = "0 6px 0 " + adjustColor(data.color, -30);
+            });
+        }
+
+        function changeMonth(dir) {
+            currentIndex = (currentIndex + dir + monthsData.length) % monthsData.length;
+            const card = document.getElementById('mainCard');
+            card.style.transform = "scale(0.9)";
+            setTimeout(() => {
+                updateUI();
+                card.style.transform = "scale(1)";
+                playCurrentSound();
+            }, 150);
+        }
+
+        function playCurrentSound() {
+            const data = monthsData[currentIndex];
+            const mascot = document.getElementById('mascotImage');
+
+            if (mascot) mascot.src = "talkingof.gif";
+            if (currentAudio) currentAudio.pause();
+
+            currentAudio = new Audio(data.eng.toLowerCase() + "months.mp3");
+            currentAudio.onended = () => mascot.src = "talkingof.PNG";
+            currentAudio.onerror = () => mascot.src = "talkingof.PNG";
+            currentAudio.play().catch(() => mascot.src = "talkingof.PNG");
+        }
+
+        function adjustColor(color, amount) {
+            return '#' + color.replace(/^#/, '').replace(/../g, c =>
+                ('0' + Math.min(255, Math.max(0, parseInt(c, 16) + amount)).toString(16)).slice(-2)
+            );
+        }
+    </script>
+</body>
+</html>
