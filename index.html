@@ -1,381 +1,266 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Little Master: Home</title>
-    
-    <!-- Preload Assets -->
-    <link rel="preload" href="Welcome.gif" as="image">
-    <link rel="preload" href="welcome.mp3" as="audio">
-    
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Little Master: Home</title>
 
-    <style>
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+<link rel="preload" href="Welcome.gif" as="image"> 
+<link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script> 
 
-        body {
-            font-family: 'Bubblegum Sans', cursive;
-            background-color: #E0F7FA;
-            background-image: radial-gradient(#B2EBF2 20%, transparent 20%),
-                              radial-gradient(#B2EBF2 20%, transparent 20%);
-            background-position: 0 0, 10px 10px;
-            background-size: 20px 20px;
-            min-height: 100vh;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-x: hidden;
-            overflow-y: auto;
-            color: #333;
-            padding-bottom: 80px;
-        }
+<style> 
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; } 
+body { font-family: 'Bubblegum Sans', cursive; background-color: #E0F7FA; background-image: radial-gradient(#B2EBF2 20%, transparent 20%), radial-gradient(#B2EBF2 20%, transparent 20%); background-position: 0 0, 10px 10px; background-size: 20px 20px; min-height: 100vh; margin: 0; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; overflow-y: auto; color: #333; padding-bottom: 80px; } 
 
-        /* --- HEADER --- */
-        .app-header {
-            width: 100%; background: white; padding: 15px; text-align: center;
-            border-bottom: 8px solid #FFCA28; border-radius: 0 0 30px 30px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1); position: sticky; top: 0;
-            z-index: 100; flex-shrink: 0;
-        }
-        .app-title {
-            margin: 0; font-size: 40px;
-            background: linear-gradient(to right, #FF5252, #FF9800, #4CAF50, #2196F3);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(3px 3px 0px rgba(0,0,0,0.2)); letter-spacing: 1px;
-        }
+/* --- HEADER --- */ 
+.app-header { width: 100%; background: white; padding: 15px; text-align: center; border-bottom: 8px solid #FFCA28; border-radius: 0 0 30px 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; flex-shrink: 0; } 
+.app-title { margin: 0; font-size: 40px; background: linear-gradient(to right, #FF5252, #FF9800, #4CAF50, #2196F3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(3px 3px 0px rgba(0,0,0,0.2)); letter-spacing: 1px; } 
 
-        /* --- WELCOME SYSTEM --- */
-        .welcome-wrapper {
-            margin-top: 70px; margin-bottom: 40px; width: 90%; max-width: 400px;
-            position: relative; flex-shrink: 0; cursor: pointer; z-index: 10;
-            transition: opacity 1s ease;
-        }
+/* --- WELCOME SYSTEM --- */ 
+.welcome-wrapper { margin-top: 70px; margin-bottom: 40px; width: 90%; max-width: 400px; position: relative; flex-shrink: 0; cursor: pointer; z-index: 10; transition: opacity 1s ease; } 
+.mascot-img { position: absolute; top: -90px; left: 50%; transform: translateX(-50%); width: 130px; height: auto; z-index: 10; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2)); } 
+.welcome-card-3d { background: linear-gradient(135deg, #FF9800, #FF5722); padding: 40px 15px 20px 15px; border-radius: 30px; text-align: center; border: 4px solid #fff; box-shadow: 0 12px 0 #E65100, 0 25px 25px rgba(0,0,0,0.2); color: white; position: relative; } 
+.welcome-main { font-size: 34px; margin: 10px 0 0 0; text-shadow: 2px 2px 0 rgba(0,0,0,0.2); } 
+.typing-container { font-size: 18px; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; display: inline-block; margin-top: 8px; border: 1px dashed rgba(255,255,255,0.6); } 
 
-        .mascot-img {
-            position: absolute; top: -90px; left: 50%; transform: translateX(-50%);
-            width: 130px; height: auto; z-index: 10;
-            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
-        }
+/* --- MENU & BUTTONS --- */ 
+.share-container { width: 90%; max-width: 400px; margin: 30px 0; flex-shrink: 0; } 
+.share-btn { width: 100%; background: linear-gradient(to bottom, #00E676, #00C853); color: white; border: none; padding: 15px; font-size: 22px; border-radius: 50px; font-family: 'Bubblegum Sans', cursive; cursor: pointer; box-shadow: 0 6px 0 #007E33, 0 12px 10px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; gap: 10px; text-shadow: 1px 1px 0 #004D40; position: relative; top: 0; transition: all 0.1s; } 
+.share-btn:active { top: 6px; box-shadow: 0 0 0 #007E33; } 
+.section-header { background: #fff; padding: 8px 25px; border-radius: 50px; color: #FF5722; font-size: 26px; margin: 20px 0 15px 0; box-shadow: 0 4px 0 #FFAB91; display: inline-block; } 
+.first-menu-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; width: 90%; max-width: 420px; margin-bottom: 10px; flex-shrink: 0; } 
+.menu-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 95%; max-width: 500px; margin-bottom: 20px; flex-shrink: 0; } 
+.menu-card { border-radius: 25px; padding: 15px 5px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 125px; position: relative; top: 0; transition: all 0.1s; border: 2px solid rgba(255,255,255,0.4); } 
+.icon { font-size: 50px; margin-bottom: 5px; filter: drop-shadow(0 4px 2px rgba(0,0,0,0.2)); } 
+.card-title { font-size: 19px; font-weight: bold; margin: 0; text-shadow: 1px 1px 0 rgba(255,255,255,0.5); } 
+.card-red { background: linear-gradient(to bottom, #FFEBEE, #FFCDD2); box-shadow: 0 8px 0 #EF5350; color: #B71C1C; } 
+.card-red:active { top: 8px; box-shadow: 0 0 0 #EF5350; } 
+.card-blue { background: linear-gradient(to bottom, #E3F2FD, #90CAF9); box-shadow: 0 8px 0 #42A5F5; color: #0D47A1; } 
+.card-blue:active { top: 8px; box-shadow: 0 0 0 #42A5F5; } 
+.card-green { background: linear-gradient(to bottom, #E8F5E9, #A5D6A7); box-shadow: 0 8px 0 #66BB6A; color: #1B5E20; } 
+.card-green:active { top: 8px; box-shadow: 0 0 0 #66BB6A; } 
+.card-orange { background: linear-gradient(to bottom, #FFF3E0, #FFCC80); box-shadow: 0 8px 0 #FFA726; color: #E65100; } 
+.card-orange:active { top: 8px; box-shadow: 0 0 0 #FFA726; } 
+.card-purple { background: linear-gradient(to bottom, #F3E5F5, #CE93D8); box-shadow: 0 8px 0 #AB47BC; color: #4A148C; } 
+.card-purple:active { top: 8px; box-shadow: 0 0 0 #AB47BC; } 
+.card-yellow { background: linear-gradient(to bottom, #FFFDE7, #FFF59D); box-shadow: 0 8px 0 #FDD835; color: #F57F17; } 
+.card-yellow:active { top: 8px; box-shadow: 0 0 0 #FDD835; } 
 
-        .welcome-card-3d {
-            background: linear-gradient(135deg, #FF9800, #FF5722);
-            padding: 40px 15px 20px 15px; border-radius: 30px; text-align: center;
-            border: 4px solid #fff; box-shadow: 0 12px 0 #E65100, 0 25px 25px rgba(0,0,0,0.2);
-            color: white; position: relative;
-        }
+/* SOCIAL & FOOTER */ 
+.social-section { width: 90%; max-width: 400px; background: #fff; border-radius: 25px; padding: 20px; text-align: center; margin-top: 20px; flex-shrink: 0; box-shadow: 0 10px 0 #CFD8DC, 0 20px 20px rgba(0,0,0,0.1); border: 2px solid #ECEFF1; } 
+.social-title { margin: 0 0 15px 0; color: #FF5722; font-size: 24px; text-shadow: 1px 1px 0 #eee; } 
+.social-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; justify-items: center; } 
+.social-btn { width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 26px; text-decoration: none; border: 3px solid rgba(255,255,255,0.3); } 
+.social-btn:active { top: 4px; box-shadow: none !important; } 
+.tg { background: #0088cc; box-shadow: 0 5px 0 #005f8f; } 
+.insta { background: linear-gradient(45deg, #f09433, #bc1888); box-shadow: 0 5px 0 #880e4f; } 
+.yt { background: #FF0000; box-shadow: 0 5px 0 #b71c1c; } 
+.fb { background: #1877F2; box-shadow: 0 5px 0 #0d47a1; } 
+.wa { background: #25D366; box-shadow: 0 5px 0 #1b5e20; } 
+.cloud { background: #FF9800; box-shadow: 0 5px 0 #e65100; } 
+.bot { background: #673AB7; box-shadow: 0 5px 0 #311b92; } 
 
-        .welcome-main { font-size: 34px; margin: 10px 0 0 0; text-shadow: 2px 2px 0 rgba(0,0,0,0.2); }
-        
-        .typing-container {
-            font-size: 18px; background: rgba(255,255,255,0.2);
-            padding: 5px 15px; border-radius: 20px; display: inline-block;
-            margin-top: 8px; border: 1px dashed rgba(255,255,255,0.6);
-        }
+/* ADS CLEANUP */
+.middle-ad-container, .ad-bottom { display: none !important; height: 0; width: 0; overflow: hidden; }
 
-        /* --- MENU & BUTTONS --- */
-        .share-container { width: 90%; max-width: 400px; margin: 30px 0; flex-shrink: 0; }
-        .share-btn {
-            width: 100%; background: linear-gradient(to bottom, #00E676, #00C853);
-            color: white; border: none; padding: 15px; font-size: 22px;
-            border-radius: 50px; font-family: 'Bubblegum Sans', cursive; cursor: pointer;
-            box-shadow: 0 6px 0 #007E33, 0 12px 10px rgba(0,0,0,0.2);
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            text-shadow: 1px 1px 0 #004D40; position: relative; top: 0; transition: all 0.1s;
-        }
-        .share-btn:active { top: 6px; box-shadow: 0 0 0 #007E33; }
+.footer-area { width: 100%; text-align: center; padding-bottom: 120px; margin-top: 20px; } 
+.policy-link { color: #E91E63; text-decoration: none; font-size: 16px; font-weight: bold; background: white; padding: 10px 25px; border-radius: 50px; box-shadow: 0 4px 0 #F8BBD0; display: inline-block; } 
 
-        .section-header {
-            background: #fff; padding: 8px 25px; border-radius: 50px;
-            color: #FF5722; font-size: 26px; margin: 20px 0 15px 0;
-            box-shadow: 0 4px 0 #FFAB91; display: inline-block;
-        }
-
-        .first-menu-container {
-            display: grid; grid-template-columns: repeat(2, 1fr);
-            gap: 25px; width: 90%; max-width: 420px; margin-bottom: 10px; flex-shrink: 0;
-        }
-        .menu-container {
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 15px; width: 95%; max-width: 500px; margin-bottom: 20px; flex-shrink: 0;
-        }
-
-        .menu-card {
-            border-radius: 25px; padding: 15px 5px; text-align: center; cursor: pointer;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 125px; position: relative; top: 0; transition: all 0.1s;
-            border: 2px solid rgba(255,255,255,0.4);
-        }
-        .icon { font-size: 50px; margin-bottom: 5px; filter: drop-shadow(0 4px 2px rgba(0,0,0,0.2)); }
-        .card-title { font-size: 19px; font-weight: bold; margin: 0; text-shadow: 1px 1px 0 rgba(255,255,255,0.5); }
-
-        .card-red { background: linear-gradient(to bottom, #FFEBEE, #FFCDD2); box-shadow: 0 8px 0 #EF5350; color: #B71C1C; }
-        .card-red:active { top: 8px; box-shadow: 0 0 0 #EF5350; }
-        .card-blue { background: linear-gradient(to bottom, #E3F2FD, #90CAF9); box-shadow: 0 8px 0 #42A5F5; color: #0D47A1; }
-        .card-blue:active { top: 8px; box-shadow: 0 0 0 #42A5F5; }
-        .card-green { background: linear-gradient(to bottom, #E8F5E9, #A5D6A7); box-shadow: 0 8px 0 #66BB6A; color: #1B5E20; }
-        .card-green:active { top: 8px; box-shadow: 0 0 0 #66BB6A; }
-        .card-orange { background: linear-gradient(to bottom, #FFF3E0, #FFCC80); box-shadow: 0 8px 0 #FFA726; color: #E65100; }
-        .card-orange:active { top: 8px; box-shadow: 0 0 0 #FFA726; }
-        .card-purple { background: linear-gradient(to bottom, #F3E5F5, #CE93D8); box-shadow: 0 8px 0 #AB47BC; color: #4A148C; }
-        .card-purple:active { top: 8px; box-shadow: 0 0 0 #AB47BC; }
-        .card-yellow { background: linear-gradient(to bottom, #FFFDE7, #FFF59D); box-shadow: 0 8px 0 #FDD835; color: #F57F17; }
-        .card-yellow:active { top: 8px; box-shadow: 0 0 0 #FDD835; }
-
-        /* SOCIAL & FOOTER */
-        .social-section {
-            width: 90%; max-width: 400px; background: #fff; border-radius: 25px;
-            padding: 20px; text-align: center; margin-top: 20px; flex-shrink: 0;
-            box-shadow: 0 10px 0 #CFD8DC, 0 20px 20px rgba(0,0,0,0.1); border: 2px solid #ECEFF1;
-        }
-        .social-title { margin: 0 0 15px 0; color: #FF5722; font-size: 24px; text-shadow: 1px 1px 0 #eee; }
-        .social-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; justify-items: center; }
-        .social-btn {
-            width: 55px; height: 55px; border-radius: 50%; display: flex;
-            justify-content: center; align-items: center; color: white; font-size: 26px;
-            text-decoration: none; border: 3px solid rgba(255,255,255,0.3);
-        }
-        .social-btn:active { top: 4px; box-shadow: none !important; }
-        .tg { background: #0088cc; box-shadow: 0 5px 0 #005f8f; }
-        .insta { background: linear-gradient(45deg, #f09433, #bc1888); box-shadow: 0 5px 0 #880e4f; }
-        .yt { background: #FF0000; box-shadow: 0 5px 0 #b71c1c; }
-        .fb { background: #1877F2; box-shadow: 0 5px 0 #0d47a1; }
-        .wa { background: #25D366; box-shadow: 0 5px 0 #1b5e20; }
-        .cloud { background: #FF9800; box-shadow: 0 5px 0 #e65100; }
-        .bot { background: #673AB7; box-shadow: 0 5px 0 #311b92; }
-
-        .footer-area { width: 100%; text-align: center; padding-bottom: 120px; margin-top: 20px; }
-        .policy-link { color: #E91E63; text-decoration: none; font-size: 16px; font-weight: bold; background: white; padding: 10px 25px; border-radius: 50px; box-shadow: 0 4px 0 #F8BBD0; display: inline-block; }
-
-        .share-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(5px); }
-        .share-box { background: white; width: 85%; max-width: 320px; border-radius: 25px; padding: 25px; text-align: center; box-shadow: 0 20px 0 #E0E0E0; border: 4px solid #4DB6AC; }
-        .share-option { display: flex; align-items: center; background: #f5f5f5; padding: 15px; margin: 12px 0; border-radius: 15px; text-decoration: none; color: #333; font-size: 18px; font-weight: bold; box-shadow: 0 4px 0 #ccc; }
-        .share-icon { margin-right: 15px; font-size: 28px; }
-        .cl-wa { color: #25D366; } .cl-tg { color: #0088cc; } .cl-fb { color: #1877F2; }
-        .close-share { background: #F44336; color: white; border: none; padding: 12px 30px; border-radius: 30px; font-size: 18px; margin-top: 15px; cursor: pointer; font-family: 'Bubblegum Sans', cursive; box-shadow: 0 5px 0 #D32F2F; }
-    </style>
+.share-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(5px); } 
+.share-box { background: white; width: 85%; max-width: 320px; border-radius: 25px; padding: 25px; text-align: center; box-shadow: 0 20px 0 #E0E0E0; border: 4px solid #4DB6AC; } 
+.share-option { display: flex; align-items: center; background: #f5f5f5; padding: 15px; margin: 12px 0; border-radius: 15px; text-decoration: none; color: #333; font-size: 18px; font-weight: bold; box-shadow: 0 4px 0 #ccc; } 
+.share-icon { margin-right: 15px; font-size: 28px; } 
+.cl-wa { color: #25D366; } 
+.cl-tg { color: #0088cc; } 
+.cl-fb { color: #1877F2; } 
+.close-share { background: #F44336; color: white; border: none; padding: 12px 30px; border-radius: 30px; font-size: 18px; margin-top: 15px; cursor: pointer; font-family: 'Bubblegum Sans', cursive; box-shadow: 0 5px 0 #D32F2F; } 
+</style>
 </head>
 <body>
 
-    <!-- HEADER -->
-    <div class="app-header">
-        <h1 class="app-title">Little Master 🎓</h1>
-    </div>
+<div class="app-header"> <h1 class="app-title">Little Master 🎓</h1> </div> 
 
-    <!-- WELCOME SYSTEM -->
-    <div class="welcome-wrapper" id="welcomeBox">
-        <img src="Welcome.gif" id="welcomeGif" class="mascot-img" alt="Little Master">
-        <div class="welcome-card-3d">
-            <h2 class="welcome-main">Hello, Genius!</h2>
-            <div class="typing-container">
-                <span id="typewriter">Let's Learn & Play...</span>
-            </div>
-        </div>
-    </div>
+<div class="welcome-wrapper" id="welcomeBox"> 
+    <img src="Welcome.gif" id="welcomeGif" class="mascot-img" alt="Little Master"> 
+    <div class="welcome-card-3d"> 
+        <h2 class="welcome-main">Hello, Genius!</h2> 
+        <div class="typing-container"> <span id="typewriter">Let's Learn & Play...</span> </div> 
+    </div> 
+</div> 
 
-    <!-- FIRST MENU -->
-    <div class="first-menu-container">
-        <div class="menu-card card-red" onclick="openGame('abcd.html')"><div class="icon">🅰️</div><p class="card-title">ABCD</p></div>
-        <div class="menu-card card-blue" onclick="openGame('123.html')"><div class="icon">🔢</div><p class="card-title">1 to 100</p></div>
-        <div class="menu-card card-green" onclick="openGame('hindi.html')"><div class="icon">🕉️</div><p class="card-title">Hindi</p></div>
-        <div class="menu-card card-orange" onclick="openGame('colors.html')"><div class="icon">🎨</div><p class="card-title">Colors</p></div>
-    </div>
+<div class="first-menu-container"> 
+    <div class="menu-card card-red" onclick="openGame('abcd.html')"><div class="icon">🅰️</div><p class="card-title">ABCD</p></div> 
+    <div class="menu-card card-blue" onclick="openGame('123.html')"><div class="icon">🔢</div><p class="card-title">1 to 100</p></div> 
+    <div class="menu-card card-green" onclick="openGame('hindi.html')"><div class="icon">🕉️</div><p class="card-title">Hindi</p></div> 
+    <div class="menu-card card-orange" onclick="openGame('colors.html')"><div class="icon">🎨</div><p class="card-title">Colors</p></div> 
+</div> 
 
-    <!-- SHARE -->
-    <div class="share-container">
-        <button class="share-btn" onclick="openShareModal()">
-            <i class="fas fa-share-alt"></i> Share with Friends
-        </button>
-    </div>
+<div class="share-container"> 
+    <button class="share-btn" onclick="openShareModal()"> <i class="fas fa-share-alt"></i> Share with Friends </button> 
+</div> 
 
-    <!-- MORE GAMES -->
-    <div class="section-header">🎯 More Games</div>
+<div class="section-header">🎯 More Games</div> 
+<div class="menu-container"> 
+    <div class="menu-card card-purple" onclick="openGame('animals.html')"><div class="icon">🐯</div><p class="card-title">Animals</p></div> 
+    <div class="menu-card card-yellow" onclick="openGame('fruits.html')"><div class="icon">🍎</div><p class="card-title">Fruits</p></div> 
+    <div class="menu-card card-green" onclick="openGame('vegetables.html')"><div class="icon">🥦</div><p class="card-title">Vegetables</p></div> 
+    <div class="menu-card card-blue" onclick="openGame('vehicles.html')"><div class="icon">🚗</div><p class="card-title">Vehicles</p></div> 
+    <div class="menu-card card-red" onclick="openGame('birds.html')"><div class="icon">🐦</div><p class="card-title">Birds</p></div> 
+    <div class="menu-card card-orange" onclick="openGame('bodyparts.html')"><div class="icon">👂</div><p class="card-title">Body</p></div> 
+    <div class="menu-card card-purple" onclick="openGame('family.html')"><div class="icon">👨‍👩‍👧‍👦</div><p class="card-title">Family</p></div> 
+    <div class="menu-card card-yellow" onclick="openGame('rhymes.html')"><div class="icon">🎵</div><p class="card-title">Rhymes</p></div> 
+    <div class="menu-card card-red" onclick="openGame('stories.html')"><div class="icon">📖</div><p class="card-title">Stories</p></div> 
+    <div class="menu-card card-blue" onclick="openGame('shapes.html')"><div class="icon">🔺</div><p class="card-title">Shapes</p></div> 
+    <div class="menu-card card-green" onclick="openGame('days.html')"><div class="icon">📅</div><p class="card-title">Days</p></div> 
+    <div class="menu-card card-orange" onclick="openGame('months.html')"><div class="icon">🗓️</div><p class="card-title">Months</p></div> 
+    <div class="menu-card card-purple" onclick="openGame('planets.html')"><div class="icon">🪐</div><p class="card-title">Planets</p></div> 
+    <div class="menu-card card-yellow" onclick="openGame('habits.html')"><div class="icon">🦷</div><p class="card-title">Habits</p></div> 
+    <div class="menu-card card-red" onclick="openGame('jobs.html')"><div class="icon">👨‍⚕️</div><p class="card-title">Jobs</p></div> 
+    <div class="menu-card card-blue" onclick="openGame('sports.html')"><div class="icon">⚽</div><p class="card-title">Sports</p></div> 
+    <div class="menu-card card-green" onclick="openGame('flowers.html')"><div class="icon">🌻</div><p class="card-title">Flowers</p></div> 
+    <div class="menu-card card-orange" onclick="openGame('insects.html')"><div class="icon">🐞</div><p class="card-title">Insects</p></div> 
+    <div class="menu-card card-purple" onclick="openGame('sea_animals.html')"><div class="icon">🐬</div><p class="card-title">Sea World</p></div> 
+    <div class="menu-card card-yellow" onclick="openGame('opposites.html')"><div class="icon">↔️</div><p class="card-title">Opposites</p></div> 
+    <div class="menu-card card-red" onclick="openGame('seasons.html')"><div class="icon">⛈️</div><p class="card-title">Seasons</p></div> 
+    <div class="menu-card card-blue" onclick="openGame('time.html')"><div class="icon">⏰</div><p class="card-title">Time</p></div> 
+    <div class="menu-card card-green" onclick="openGame('emotions.html')"><div class="icon">😃</div><p class="card-title">Feelings</p></div> 
+    <div class="menu-card card-orange" onclick="openGame('flags.html')"><div class="icon">🏳️</div><p class="card-title">Flags</p></div> 
 
-    <div class="menu-container">
-        <!-- Old Existing -->
-        <div class="menu-card card-purple" onclick="openGame('animals.html')"><div class="icon">🐯</div><p class="card-title">Animals</p></div>
-        <div class="menu-card card-yellow" onclick="openGame('fruits.html')"><div class="icon">🍎</div><p class="card-title">Fruits</p></div>
-        <div class="menu-card card-green" onclick="openGame('vegetables.html')"><div class="icon">🥦</div><p class="card-title">Vegetables</p></div>
-        <div class="menu-card card-blue" onclick="openGame('vehicles.html')"><div class="icon">🚗</div><p class="card-title">Vehicles</p></div>
-        <div class="menu-card card-red" onclick="openGame('birds.html')"><div class="icon">🐦</div><p class="card-title">Birds</p></div>
-        <div class="menu-card card-orange" onclick="openGame('bodyparts.html')"><div class="icon">👂</div><p class="card-title">Body</p></div>
-        <div class="menu-card card-purple" onclick="openGame('family.html')"><div class="icon">👨‍👩‍👧‍👦</div><p class="card-title">Family</p></div>
-        <div class="menu-card card-yellow" onclick="openGame('rhymes.html')"><div class="icon">🎵</div><p class="card-title">Rhymes</p></div>
-        <div class="menu-card card-red" onclick="openGame('stories.html')"><div class="icon">📖</div><p class="card-title">Stories</p></div>
-        <div class="menu-card card-blue" onclick="openGame('shapes.html')"><div class="icon">🔺</div><p class="card-title">Shapes</p></div>
-        <div class="menu-card card-green" onclick="openGame('days.html')"><div class="icon">📅</div><p class="card-title">Days</p></div>
-        <div class="menu-card card-orange" onclick="openGame('months.html')"><div class="icon">🗓️</div><p class="card-title">Months</p></div>
-        <div class="menu-card card-purple" onclick="openGame('planets.html')"><div class="icon">🪐</div><p class="card-title">Planets</p></div>
-        <div class="menu-card card-yellow" onclick="openGame('habits.html')"><div class="icon">🦷</div><p class="card-title">Habits</p></div>
-        <div class="menu-card card-red" onclick="openGame('jobs.html')"><div class="icon">👨‍⚕️</div><p class="card-title">Jobs</p></div>
-        <div class="menu-card card-blue" onclick="openGame('sports.html')"><div class="icon">⚽</div><p class="card-title">Sports</p></div>
-        <div class="menu-card card-green" onclick="openGame('flowers.html')"><div class="icon">🌻</div><p class="card-title">Flowers</p></div>
-        <div class="menu-card card-orange" onclick="openGame('insects.html')"><div class="icon">🐞</div><p class="card-title">Insects</p></div>
-        <div class="menu-card card-purple" onclick="openGame('sea_animals.html')"><div class="icon">🐬</div><p class="card-title">Sea World</p></div>
-        <div class="menu-card card-yellow" onclick="openGame('opposites.html')"><div class="icon">↔️</div><p class="card-title">Opposites</p></div>
-        <div class="menu-card card-red" onclick="openGame('seasons.html')"><div class="icon">⛈️</div><p class="card-title">Seasons</p></div>
-        <div class="menu-card card-blue" onclick="openGame('time.html')"><div class="icon">⏰</div><p class="card-title">Time</p></div>
-        <div class="menu-card card-green" onclick="openGame('emotions.html')"><div class="icon">😃</div><p class="card-title">Feelings</p></div>
-        <div class="menu-card card-orange" onclick="openGame('flags.html')"><div class="icon">🏳️</div><p class="card-title">Flags</p></div>
+    <div class="menu-card card-red" onclick="openGame('phonics.html')"><div class="icon">🔊</div><p class="card-title">Phonics</p></div> 
+    <div class="menu-card card-blue" onclick="openGame('writing.html')"><div class="icon">✍️</div><p class="card-title">Writing</p></div> 
+    <div class="menu-card card-green" onclick="openGame('spelling.html')"><div class="icon">🔤</div><p class="card-title">Spelling</p></div> 
+    <div class="menu-card card-orange" onclick="openGame('reading.html')"><div class="icon">📚</div><p class="card-title">Reading</p></div> 
+    <div class="menu-card card-purple" onclick="openGame('vocabulary.html')"><div class="icon">🗣️</div><p class="card-title">Vocab</p></div> 
+    <div class="menu-card card-yellow" onclick="openGame('addition.html')"><div class="icon">➕</div><p class="card-title">Addition</p></div> 
+    <div class="menu-card card-red" onclick="openGame('subtraction.html')"><div class="icon">➖</div><p class="card-title">Subtract</p></div> 
+    <div class="menu-card card-blue" onclick="openGame('multiply.html')"><div class="icon">✖️</div><p class="card-title">Multiply</p></div> 
+    <div class="menu-card card-green" onclick="openGame('division.html')"><div class="icon">➗</div><p class="card-title">Division</p></div> 
+    <div class="menu-card card-orange" onclick="openGame('patterns.html')"><div class="icon">🔳</div><p class="card-title">Patterns</p></div> 
+    <div class="menu-card card-purple" onclick="openGame('money.html')"><div class="icon">💰</div><p class="card-title">Money</p></div> 
+    <div class="menu-card card-yellow" onclick="openGame('measure.html')"><div class="icon">📏</div><p class="card-title">Measure</p></div> 
+    <div class="menu-card card-red" onclick="openGame('plants.html')"><div class="icon">🌱</div><p class="card-title">Plants</p></div> 
+    <div class="menu-card card-blue" onclick="openGame('weather.html')"><div class="icon">🌦️</div><p class="card-title">Weather</p></div> 
+    <div class="menu-card card-green" onclick="openGame('water.html')"><div class="icon">💧</div><p class="card-title">Water</p></div> 
+    <div class="menu-card card-orange" onclick="openGame('senses.html')"><div class="icon">🖐️</div><p class="card-title">5 Senses</p></div> 
+    <div class="menu-card card-purple" onclick="openGame('evs.html')"><div class="icon">🌍</div><p class="card-title">EVS</p></div> 
+    <div class="menu-card card-yellow" onclick="openGame('science.html')"><div class="icon">🔬</div><p class="card-title">Science</p></div> 
+    <div class="menu-card card-red" onclick="openGame('mycountry.html')"><div class="icon">🇮🇳</div><p class="card-title">India</p></div> 
+    <div class="menu-card card-blue" onclick="openGame('festivals.html')"><div class="icon">🎉</div><p class="card-title">Festivals</p></div> 
+    <div class="menu-card card-green" onclick="openGame('gk.html')"><div class="icon">🧠</div><p class="card-title">GK Quiz</p></div> 
+    <div class="menu-card card-orange" onclick="openGame('maps.html')"><div class="icon">🗺️</div><p class="card-title">Maps</p></div> 
+    <div class="menu-card card-purple" onclick="openGame('history.html')"><div class="icon">🏰</div><p class="card-title">History</p></div> 
+    <div class="menu-card card-yellow" onclick="openGame('manners.html')"><div class="icon">🤝</div><p class="card-title">Manners</p></div> 
+    <div class="menu-card card-red" onclick="openGame('safety.html')"><div class="icon">🚧</div><p class="card-title">Safety</p></div> 
+    <div class="menu-card card-blue" onclick="openGame('hygiene.html')"><div class="icon">🧼</div><p class="card-title">Hygiene</p></div> 
+    <div class="menu-card card-green" onclick="openGame('values.html')"><div class="icon">💖</div><p class="card-title">Values</p></div> 
+    <div class="menu-card card-orange" onclick="openGame('drawing.html')"><div class="icon">🖍️</div><p class="card-title">Drawing</p></div> 
+    <div class="menu-card card-purple" onclick="openGame('painting.html')"><div class="icon">🎨</div><p class="card-title">Paint</p></div> 
+    <div class="menu-card card-yellow" onclick="openGame('music.html')"><div class="icon">🎹</div><p class="card-title">Music</p></div> 
+    <div class="menu-card card-red" onclick="openGame('dance.html')"><div class="icon">💃</div><p class="card-title">Dance</p></div> 
+    <div class="menu-card card-blue" onclick="openGame('craft.html')"><div class="icon">✂️</div><p class="card-title">Craft</p></div> 
+    <div class="menu-card card-green" onclick="openGame('computer.html')"><div class="icon">💻</div><p class="card-title">Computer</p></div> 
+    <div class="menu-card card-orange" onclick="openGame('coding.html')"><div class="icon">👨‍💻</div><p class="card-title">Coding</p></div> 
+    <div class="menu-card card-purple" onclick="openGame('puzzles.html')"><div class="icon">🧩</div><p class="card-title">Puzzle</p></div> 
+    <div class="menu-card card-yellow" onclick="openGame('memory.html')"><div class="icon">🧠</div><p class="card-title">Memory</p></div> 
+    <div class="menu-card card-red" onclick="openGame('logic.html')"><div class="icon">💡</div><p class="card-title">Logic</p></div> 
+    <div class="menu-card card-blue" onclick="openGame('yoga.html')"><div class="icon">🧘</div><p class="card-title">Yoga</p></div> 
+    <div class="menu-card card-green" onclick="openGame('exercise.html')"><div class="icon">🏃</div><p class="card-title">Exercise</p></div> 
+    <div class="menu-card card-orange" onclick="openGame('shopping.html')"><div class="icon">🛒</div><p class="card-title">Shop</p></div> 
+    <div class="menu-card card-purple" onclick="openGame('cleaning.html')"><div class="icon">🧹</div><p class="card-title">Clean</p></div> 
+</div> 
 
-        <!-- 🔥 NEW UNLIMITED LEARNING GAMES (Categorized) 🔥 -->
-        
-        <!-- Language Learning -->
-        <div class="menu-card card-red" onclick="openGame('phonics.html')"><div class="icon">🔊</div><p class="card-title">Phonics</p></div>
-        <div class="menu-card card-blue" onclick="openGame('writing.html')"><div class="icon">✍️</div><p class="card-title">Writing</p></div>
-        <div class="menu-card card-green" onclick="openGame('spelling.html')"><div class="icon">🔤</div><p class="card-title">Spelling</p></div>
-        <div class="menu-card card-orange" onclick="openGame('reading.html')"><div class="icon">📚</div><p class="card-title">Reading</p></div>
-        <div class="menu-card card-purple" onclick="openGame('vocabulary.html')"><div class="icon">🗣️</div><p class="card-title">Vocab</p></div>
+<div class="social-section"> 
+    <h3 class="social-title">Follow Us ❤️</h3> 
+    <div class="social-grid"> 
+        <a href="https://telegram.me/Filmyzilla2070" class="social-btn tg" target="_blank"><i class="fab fa-telegram-plane"></i></a> 
+        <a href="https://whatsapp.com/channel/0029VakbntP1noz3yC6r1f0y" class="social-btn wa" target="_blank"><i class="fab fa-whatsapp"></i></a> 
+        <a href="https://www.instagram.com/today_funny_jokes_2025?igsh=MWpjY3pmYmEydmJpYw==" class="social-btn insta" target="_blank"><i class="fab fa-instagram"></i></a> 
+        <a href="https://youtube.com/@dineshdns001?si=AHneL3_PqJ0plDz7" class="social-btn yt" target="_blank"><i class="fab fa-youtube"></i></a> 
+        <a href="https://www.facebook.com/share/17cUeTQQpm/" class="social-btn fb" target="_blank"><i class="fab fa-facebook-f"></i></a> 
+        <a href="https://t.me/TataSierraEarnGame_Bot" class="social-btn bot" target="_blank"><i class="fas fa-robot"></i></a> 
+        <a href="https://www.nephobox.com/wap/hive/channelShare?bot_uk=4400089178287" class="social-btn cloud" target="_blank"><i class="fas fa-cloud"></i></a> 
+    </div> 
+</div> 
 
-        <!-- Math Learning -->
-        <div class="menu-card card-yellow" onclick="openGame('addition.html')"><div class="icon">➕</div><p class="card-title">Addition</p></div>
-        <div class="menu-card card-red" onclick="openGame('subtraction.html')"><div class="icon">➖</div><p class="card-title">Subtract</p></div>
-        <div class="menu-card card-blue" onclick="openGame('multiply.html')"><div class="icon">✖️</div><p class="card-title">Multiply</p></div>
-        <div class="menu-card card-green" onclick="openGame('division.html')"><div class="icon">➗</div><p class="card-title">Division</p></div>
-        <div class="menu-card card-orange" onclick="openGame('patterns.html')"><div class="icon">🔳</div><p class="card-title">Patterns</p></div>
-        <div class="menu-card card-purple" onclick="openGame('money.html')"><div class="icon">💰</div><p class="card-title">Money</p></div>
-        <div class="menu-card card-yellow" onclick="openGame('measure.html')"><div class="icon">📏</div><p class="card-title">Measure</p></div>
+<div class="footer-area"> 
+    <a href="privacy.html" class="policy-link">🔒 Privacy Policy</a> 
+    <br><br><span style="font-size:12px; color:#555;">© Little Master App</span> 
+</div> 
 
-        <!-- Science & Nature -->
-        <div class="menu-card card-red" onclick="openGame('plants.html')"><div class="icon">🌱</div><p class="card-title">Plants</p></div>
-        <div class="menu-card card-blue" onclick="openGame('weather.html')"><div class="icon">🌦️</div><p class="card-title">Weather</p></div>
-        <div class="menu-card card-green" onclick="openGame('water.html')"><div class="icon">💧</div><p class="card-title">Water</p></div>
-        <div class="menu-card card-orange" onclick="openGame('senses.html')"><div class="icon">🖐️</div><p class="card-title">5 Senses</p></div>
-        <div class="menu-card card-purple" onclick="openGame('evs.html')"><div class="icon">🌍</div><p class="card-title">EVS</p></div>
-        <div class="menu-card card-yellow" onclick="openGame('science.html')"><div class="icon">🔬</div><p class="card-title">Science</p></div>
+<div class="share-modal" id="sharePopup"> 
+    <div class="share-box"> 
+        <h3 style="margin-top:0; color:#FF5722;">Share via:</h3> 
+        <a href="#" onclick="shareTo('whatsapp')" class="share-option"><i class="fab fa-whatsapp share-icon cl-wa"></i> WhatsApp</a> 
+        <a href="#" onclick="shareTo('telegram')" class="share-option"><i class="fab fa-telegram-plane share-icon cl-tg"></i> Telegram</a> 
+        <a href="#" onclick="shareTo('facebook')" class="share-option"><i class="fab fa-facebook share-icon cl-fb"></i> Facebook</a> 
+        <button class="close-share" onclick="closeShareModal()">Close</button> 
+    </div> 
+</div> 
 
-        <!-- Social & GK -->
-        <div class="menu-card card-red" onclick="openGame('mycountry.html')"><div class="icon">🇮🇳</div><p class="card-title">India</p></div>
-        <div class="menu-card card-blue" onclick="openGame('festivals.html')"><div class="icon">🎉</div><p class="card-title">Festivals</p></div>
-        <div class="menu-card card-green" onclick="openGame('gk.html')"><div class="icon">🧠</div><p class="card-title">GK Quiz</p></div>
-        <div class="menu-card card-orange" onclick="openGame('maps.html')"><div class="icon">🗺️</div><p class="card-title">Maps</p></div>
-        <div class="menu-card card-purple" onclick="openGame('history.html')"><div class="icon">🏰</div><p class="card-title">History</p></div>
+<script> 
+// --- DIRECT START LOGIC ---
+window.onload = function() {
+    // 1. Play Confetti on Load
+    if(typeof confetti === "function") {
+        confetti({ particleCount: 150, spread: 80, origin: { y: 0.3 } });
+    }
+    // 2. Start Typewriter
+    typeEffect();
+};
 
-        <!-- Moral & Life Skills -->
-        <div class="menu-card card-yellow" onclick="openGame('manners.html')"><div class="icon">🤝</div><p class="card-title">Manners</p></div>
-        <div class="menu-card card-red" onclick="openGame('safety.html')"><div class="icon">🚧</div><p class="card-title">Safety</p></div>
-        <div class="menu-card card-blue" onclick="openGame('hygiene.html')"><div class="icon">🧼</div><p class="card-title">Hygiene</p></div>
-        <div class="menu-card card-green" onclick="openGame('values.html')"><div class="icon">💖</div><p class="card-title">Values</p></div>
+function openGame(pageName) { window.location.href = pageName; } 
+function openShareModal() { document.getElementById('sharePopup').style.display = 'flex'; } 
+function closeShareModal() { document.getElementById('sharePopup').style.display = 'none'; } 
 
-        <!-- Creative & Arts -->
-        <div class="menu-card card-orange" onclick="openGame('drawing.html')"><div class="icon">🖍️</div><p class="card-title">Drawing</p></div>
-        <div class="menu-card card-purple" onclick="openGame('painting.html')"><div class="icon">🎨</div><p class="card-title">Paint</p></div>
-        <div class="menu-card card-yellow" onclick="openGame('music.html')"><div class="icon">🎹</div><p class="card-title">Music</p></div>
-        <div class="menu-card card-red" onclick="openGame('dance.html')"><div class="icon">💃</div><p class="card-title">Dance</p></div>
-        <div class="menu-card card-blue" onclick="openGame('craft.html')"><div class="icon">✂️</div><p class="card-title">Craft</p></div>
+// Typewriter
+const textElement = document.getElementById("typewriter"); 
+const texts = ["Let's Learn ABCD...", "Let's Count 123...", "Let's Play Games..."]; 
+let textIndex = 0; 
+let charIndex = 0; 
+let isDeleting = false; 
 
-        <!-- Technology & Mental Skills -->
-        <div class="menu-card card-green" onclick="openGame('computer.html')"><div class="icon">💻</div><p class="card-title">Computer</p></div>
-        <div class="menu-card card-orange" onclick="openGame('coding.html')"><div class="icon">👨‍💻</div><p class="card-title">Coding</p></div>
-        <div class="menu-card card-purple" onclick="openGame('puzzles.html')"><div class="icon">🧩</div><p class="card-title">Puzzle</p></div>
-        <div class="menu-card card-yellow" onclick="openGame('memory.html')"><div class="icon">🧠</div><p class="card-title">Memory</p></div>
-        <div class="menu-card card-red" onclick="openGame('logic.html')"><div class="icon">💡</div><p class="card-title">Logic</p></div>
+function typeEffect() { 
+    const currentText = texts[textIndex]; 
+    if (isDeleting) { 
+        textElement.innerText = currentText.substring(0, charIndex - 1); 
+        charIndex--; 
+    } else { 
+        textElement.innerText = currentText.substring(0, charIndex + 1); 
+        charIndex++; 
+    } 
+    
+    if (!isDeleting && charIndex === currentText.length) { 
+        isDeleting = true; 
+        setTimeout(typeEffect, 2000); 
+    } else if (isDeleting && charIndex === 0) { 
+        isDeleting = false; 
+        textIndex = (textIndex + 1) % texts.length; 
+        setTimeout(typeEffect, 500); 
+    } else { 
+        setTimeout(typeEffect, isDeleting ? 50 : 100); 
+    } 
+} 
 
-        <!-- Daily Life & Physical -->
-        <div class="menu-card card-blue" onclick="openGame('yoga.html')"><div class="icon">🧘</div><p class="card-title">Yoga</p></div>
-        <div class="menu-card card-green" onclick="openGame('exercise.html')"><div class="icon">🏃</div><p class="card-title">Exercise</p></div>
-        <div class="menu-card card-orange" onclick="openGame('shopping.html')"><div class="icon">🛒</div><p class="card-title">Shop</p></div>
-        <div class="menu-card card-purple" onclick="openGame('cleaning.html')"><div class="icon">🧹</div><p class="card-title">Clean</p></div>
+function shareTo(platform) { 
+    var myGameLink = "https://t.me/TataSierraEarnGame_Bot"; 
+    var message = `🚀 Ab Mobile Banega Bachon ka Sabse Achha Dost! 📱🎓\n\nKya aap chahte hain ki aapka bacha mobile par time pass karne ke bajaye kuch naya seekhe? 🤔\n\nPesh hai "Little Master" 🏆\n\n👇 Abhi Link Par Click Karein aur Khele: 👇`; 
+    var url = encodeURIComponent(myGameLink); 
+    var text = encodeURIComponent(message); 
+    var shareUrl = ""; 
+    
+    if(platform === 'whatsapp') { 
+        shareUrl = "https://api.whatsapp.com/send?text=" + text + "%0A" + url; 
+    } else if(platform === 'telegram') { 
+        shareUrl = "https://t.me/share/url?url=" + url + "&text=" + text; 
+    } else if(platform === 'facebook') { 
+        shareUrl = "https://www.facebook.com/sharer/sharer.php?u=" + url; 
+    } 
+    window.open(shareUrl, '_blank'); 
+    closeShareModal(); 
+} 
+</script>
 
-    </div>
-
-    <!-- SOCIAL -->
-    <div class="social-section">
-        <h3 class="social-title">Follow Us ❤️</h3>
-        <div class="social-grid">
-            <a href="https://telegram.me/Filmyzilla2070" class="social-btn tg" target="_blank"><i class="fab fa-telegram-plane"></i></a>
-            <a href="https://whatsapp.com/channel/0029VakbntP1noz3yC6r1f0y" class="social-btn wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
-            <a href="https://www.instagram.com/today_funny_jokes_2025?igsh=MWpjY3pmYmEydmJpYw==" class="social-btn insta" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="https://youtube.com/@dineshdns001?si=AHneL3_PqJ0plDz7" class="social-btn yt" target="_blank"><i class="fab fa-youtube"></i></a>
-            <a href="https://www.facebook.com/share/17cUeTQQpm/" class="social-btn fb" target="_blank"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://t.me/TataSierraEarnGame_Bot" class="social-btn bot" target="_blank"><i class="fas fa-robot"></i></a>
-            <a href="https://www.nephobox.com/wap/hive/channelShare?bot_uk=4400089178287" class="social-btn cloud" target="_blank"><i class="fas fa-cloud"></i></a>
-        </div>
-    </div>
-
-    <!-- FOOTER -->
-    <div class="footer-area">
-        <a href="privacy.html" class="policy-link">🔒 Privacy Policy</a>
-        <br><br><span style="font-size:12px; color:#555;">© Little Master App</span>
-    </div>
-
-    <!-- SHARE MODAL -->
-    <div class="share-modal" id="sharePopup">
-        <div class="share-box">
-            <h3 style="margin-top:0; color:#FF5722;">Share via:</h3>
-            <a href="#" onclick="shareTo('whatsapp')" class="share-option"><i class="fab fa-whatsapp share-icon cl-wa"></i> WhatsApp</a>
-            <a href="#" onclick="shareTo('telegram')" class="share-option"><i class="fab fa-telegram-plane share-icon cl-tg"></i> Telegram</a>
-            <a href="#" onclick="shareTo('facebook')" class="share-option"><i class="fab fa-facebook share-icon cl-fb"></i> Facebook</a>
-            <button class="close-share" onclick="closeShareModal()">Close</button>
-        </div>
-    </div>
-
-    <script>
-        // --- 🚀 AUTO START LOGIC (No "Play" Button) ---
-        
-        document.addEventListener("DOMContentLoaded", function() {
-            // 1. Start Typewriter Effect
-            typeEffect();
-
-            // 2. Start Confetti
-            if(typeof confetti === "function") {
-                confetti({ particleCount: 150, spread: 80, origin: { y: 0.3 } });
-            }
-
-            // 3. Try to Auto-Play Audio (Browsers might block this without user interaction)
-            let audio = new Audio('welcome.mp3');
-            audio.play().catch(e => {
-                console.log("Auto-play blocked by browser (User interaction needed for sound): " + e);
-            });
-
-            // 4. Hide welcome gif when audio ends (if it plays)
-            audio.onended = function() {
-                const welcomeBox = document.getElementById('welcomeBox');
-                if(welcomeBox) {
-                    welcomeBox.style.opacity = '0';
-                    setTimeout(() => { welcomeBox.style.display = 'none'; }, 1000);
-                }
-            };
-        });
-
-        // --- Other Functions ---
-        function openGame(pageName) { window.location.href = pageName; }
-        function openShareModal() { document.getElementById('sharePopup').style.display = 'flex'; }
-        function closeShareModal() { document.getElementById('sharePopup').style.display = 'none'; }
-
-        // Typewriter
-        const textElement = document.getElementById("typewriter");
-        const texts = ["Let's Learn ABCD...", "Let's Count 123...", "Let's Play Games..."];
-        let textIndex = 0; let charIndex = 0; let isDeleting = false;
-
-        function typeEffect() {
-            const currentText = texts[textIndex];
-            if (isDeleting) { textElement.innerText = currentText.substring(0, charIndex - 1); charIndex--; } 
-            else { textElement.innerText = currentText.substring(0, charIndex + 1); charIndex++; }
-
-            if (!isDeleting && charIndex === currentText.length) { isDeleting = true; setTimeout(typeEffect, 2000); } 
-            else if (isDeleting && charIndex === 0) { isDeleting = false; textIndex = (textIndex + 1) % texts.length; setTimeout(typeEffect, 500); } 
-            else { setTimeout(typeEffect, isDeleting ? 50 : 100); }
-        }
-
-        function shareTo(platform) {
-            var myGameLink = "https://t.me/TataSierraEarnGame_Bot";
-            var message = `🚀 Ab Mobile Banega Bachon ka Sabse Achha Dost! 📱🎓\n\nKya aap chahte hain ki aapka bacha mobile par time pass karne ke bajaye kuch naya seekhe? 🤔\n\nPesh hai "Little Master" 🏆\n\n👇 Abhi Link Par Click Karein aur Khele: 👇`;
-            var url = encodeURIComponent(myGameLink);
-            var text = encodeURIComponent(message);
-            var shareUrl = "";
-
-            if(platform === 'whatsapp') { shareUrl = "https://api.whatsapp.com/send?text=" + text + "%0A" + url; }
-            else if(platform === 'telegram') { shareUrl = "https://t.me/share/url?url=" + url + "&text=" + text; }
-            else if(platform === 'facebook') { shareUrl = "https://www.facebook.com/sharer/sharer.php?u=" + url; }
-
-            window.open(shareUrl, '_blank');
-            closeShareModal();
-        }
-    </script>
 </body>
 </html>
