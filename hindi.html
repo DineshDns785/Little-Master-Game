@@ -46,11 +46,13 @@
             justify-content: center; align-items: center; text-align: center;
         }
 
+        /* Ad CSS kept for safety but unused */
         .ad-box-rect {
             width: 300px; height: 250px; background: #fff;
             display: flex; justify-content: center; align-items: center;
             margin: 20px 0; border: 2px dashed #00796B; border-radius: 15px;
             overflow: hidden; position: relative; z-index: 1;
+            display: none; /* Hidden */
         }
 
         .play-btn {
@@ -132,13 +134,6 @@
         .btn-wrong { background: #F44336 !important; color: white !important; animation: shake 0.4s; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
 
-        /* --- ADS --- */
-        .ad-bottom {
-            position: fixed; bottom: 0; width: 100%; height: 50px;
-            background: #fff; display: flex; justify-content: center;
-            align-items: center; border-top: 1px solid #ddd; z-index: 9000;
-        }
-
         /* --- WRONG MODAL --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -158,19 +153,15 @@
 </head>
 <body>
 
-    <!-- 1. POPUNDER ADS -->
-    <script src="https://pl21772533.effectivegatecpm.com/8c/b6/66/8cb6663167876148ce98818f0eabaad8.js"></script>
+    <!-- 1. POPUNDER ADS REMOVED -->
 
     <!-- 2. START SCREEN -->
     <div id="startScreen">
         <a href="index.html" class="home-btn" style="position:absolute; top:20px; left:20px;">🏠</a>
         <h1 style="color: #00796B; font-size: 50px; margin: 10px; text-shadow: 2px 2px 0px #fff;">Hindi</h1>
-        <div class="ad-box-rect">
-            <script type="text/javascript">
-                atOptions = { 'key' : 'd30662a773f82e053b64b8591ab5444c', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
-                document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.highperformanceformat.com/d30662a773f82e053b64b8591ab5444c/invoke.js"></scr' + 'ipt>');
-            </script>
-        </div>
+        
+        <!-- Ad Box Removed -->
+
         <button class="play-btn" onclick="startGame()">▶ Start Game</button>
     </div>
 
@@ -193,24 +184,15 @@
         </div>
     </div>
 
-    <!-- 4. BOTTOM AD -->
-    <div class="ad-bottom">
-        <script type="text/javascript">
-            atOptions = { 'key' : '66159e73d9894e59c14c0570abaee84e', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-            document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.highperformanceformat.com/66159e73d9894e59c14c0570abaee84e/invoke.js"></scr' + 'ipt>');
-        </script>
-    </div>
+    <!-- 4. BOTTOM AD REMOVED -->
 
     <!-- WRONG ANSWER MODAL -->
     <div class="modal-overlay" id="wrongModal">
         <div class="modal-box">
             <div style="font-size: 24px; color: #F44336; margin-bottom:5px;">Oh No! Galat 😢</div>
-            <div class="ad-box-rect">
-                <script type="text/javascript">
-                    atOptions = { 'key' : 'd30662a773f82e053b64b8591ab5444c', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
-                    document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.highperformanceformat.com/d30662a773f82e053b64b8591ab5444c/invoke.js"></scr' + 'ipt>');
-                </script>
-            </div>
+            
+            <!-- Ad Box Removed -->
+
             <button class="btn-modal" style="background: #F44336;" onclick="resetGame()">Try Again ↺</button>
         </div>
     </div>

@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Little Master: Spelling Bee</title>
+    <title>Little Master: Spelling</title>
     
-    <!-- Kids Font -->
+    <!-- Kids Font & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet">
-    
-    <!-- Confetti Library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
@@ -16,7 +15,7 @@
 
         body {
             font-family: 'Bubblegum Sans', cursive;
-            background: linear-gradient(180deg, #E1BEE7 0%, #BA68C8 100%);
+            background: linear-gradient(180deg, #CE93D8 0%, #F3E5F5 100%);
             height: 100vh;
             margin: 0;
             display: flex;
@@ -26,453 +25,410 @@
             color: #333;
         }
 
-        /* --- HOME BUTTON --- */
+        /* --- SCREENS --- */
+        .screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            background: linear-gradient(180deg, #BA68C8 0%, #9C27B0 100%);
+            z-index: 10;
+        }
+
+        /* --- BUTTONS --- */
         .home-btn {
             position: absolute; top: 15px; left: 15px;
             background: white; border: 3px solid #fff; border-radius: 50%;
-            width: 50px; height: 50px; font-size: 28px;
+            width: 45px; height: 45px; font-size: 24px;
             cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            z-index: 200; display: flex; align-items: center;
-            justify-content: center; text-decoration: none;
+            z-index: 200; text-decoration: none; display: flex;
+            justify-content: center; align-items: center;
         }
 
-        /* --- START SCREEN --- */
-        #startScreen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(180deg, #E1BEE7 0%, #BA68C8 100%);
-            z-index: 10000; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; text-align: center;
+        .big-btn {
+            font-size: 28px; padding: 12px 30px; border-radius: 50px;
+            border: none; cursor: pointer; color: white;
+            font-family: 'Bubblegum Sans', cursive;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+            transition: transform 0.1s; margin: 10px;
+            min-width: 140px;
         }
+        .big-btn:active { transform: translateY(5px); box-shadow: none; }
+        
+        .btn-start { background: #FF9800; font-size: 35px; padding: 15px 60px; }
+        .btn-eng { background: #2196F3; }
+        .btn-hin { background: #4CAF50; }
 
-        .play-btn {
-            background: #8E24AA; color: white; font-size: 28px;
-            padding: 15px 50px; border: none; border-radius: 50px;
-            font-family: 'Bubblegum Sans', cursive; font-weight: bold;
-            box-shadow: 0 6px 0 #4A148C; cursor: pointer;
-            animation: pulse 1.5s infinite; margin-top: 20px;
+        /* --- GAME UI --- */
+        #gameWrapper { 
+            display: none; width: 100%; height: 100%; 
+            align-items: center; justify-content: center; flex-direction: column;
+            padding-bottom: 60px; /* Space for Bottom Ad */
         }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-
-        /* --- GAME AREA --- */
-        .game-wrapper {
-            flex: 1; display: none; flex-direction: column;
-            align-items: center; justify-content: center;
-            width: 100%; padding-bottom: 60px;
-        }
-
-        .mascot-display {
-            height: 90px; margin-bottom: 5px;
-            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
-        }
-
+        
         .card {
-            background: white; padding: 20px; border-radius: 30px;
+            background: white; padding: 15px; border-radius: 30px;
             width: 90%; max-width: 380px; text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 5px solid #fff;
-            display: flex; flex-direction: column; justify-content: center;
-            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 6px solid #fff;
+            display: flex; flex-direction: column; align-items: center;
+            position: relative;
         }
 
-        /* Image Area */
         .question-img {
-            font-size: 80px; margin: 10px 0;
-            filter: drop-shadow(0 4px 2px rgba(0,0,0,0.2));
-            height: 100px; display: flex; align-items: center; justify-content: center;
+            font-size: 80px; height: 100px; margin: 5px 0;
+            display: flex; align-items: center; justify-content: center;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1));
         }
-        .img-mode { max-width: 120px; max-height: 100px; object-fit: contain; }
+        .img-mode { max-width: 120px; max-height: 100px; object-fit: contain; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1)); }
 
         /* ANSWER SLOTS */
-        .answer-container {
-            display: flex; gap: 8px; justify-content: center;
-            margin: 15px 0; min-height: 60px; width: 100%;
-            flex-wrap: wrap;
+        .answer-box {
+            display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;
+            margin: 15px 0; min-height: 50px;
         }
-
-        .letter-slot {
-            width: 50px; height: 50px;
+        .slot {
+            width: 48px; height: 48px; border-radius: 12px;
             background: #F3E5F5; border: 2px dashed #AB47BC;
-            border-radius: 10px; display: flex;
-            align-items: center; justify-content: center;
-            font-size: 28px; font-weight: bold; color: #8E24AA;
-            text-transform: uppercase;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px; color: #6A1B9A; font-weight: bold;
         }
-        .slot-filled {
-            background: #E1BEE7; border: 2px solid #8E24AA; color: #4A148C;
-            animation: popIn 0.2s;
-        }
+        .slot.filled { background: #E1BEE7; border: 2px solid #8E24AA; animation: pop 0.2s; }
 
-        /* KEYBOARD AREA */
-        .keyboard-area {
-            display: flex; flex-wrap: wrap; gap: 10px;
-            justify-content: center; margin-top: 10px;
-            width: 100%;
+        /* KEYBOARD */
+        .keyboard-box {
+            display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+            margin-top: 10px; width: 100%;
         }
-
         .key-btn {
-            width: 50px; height: 50px; background: #FFEB3B;
-            border: none; border-radius: 10px;
-            font-family: 'Bubblegum Sans', cursive;
-            font-size: 26px; color: #F57F17;
-            box-shadow: 0 4px 0 #FBC02D; cursor: pointer;
-            transition: transform 0.2s, background-color 0.2s;
+            width: 45px; height: 45px; border-radius: 10px;
+            background: #FFEB3B; border: none;
+            box-shadow: 0 4px 0 #FBC02D; color: #F57F17;
+            font-size: 22px; font-family: 'Bubblegum Sans', cursive;
+            cursor: pointer;
         }
         .key-btn:active { transform: translateY(4px); box-shadow: none; }
-        .key-used { opacity: 0.4; pointer-events: none; transform: scale(0.9); box-shadow: none; background: #E0E0E0; color: #aaa; }
+        .key-btn.used { opacity: 0; pointer-events: none; transform: scale(0); transition: all 0.2s; }
 
-        /* Highlight Animation for Auto Speak */
-        .key-highlight {
-            transform: scale(1.25) !important;
-            background-color: #FFCA28 !important; /* Brighter */
-            box-shadow: 0 0 15px #FF6F00 !important;
-            z-index: 100;
-            border: 2px solid #FFF;
-        }
-
-        /* ACTIONS */
-        .action-row {
-            display: flex; gap: 15px; margin-top: 25px; width: 100%; justify-content: center;
-        }
+        /* CONTROLS */
+        .controls { display: flex; gap: 15px; margin-top: 20px; width: 100%; justify-content: center; }
         
         .action-btn {
-            border: none; padding: 10px 25px; border-radius: 20px; cursor: pointer;
-            font-family: 'Bubblegum Sans', cursive; font-size: 20px; color: white;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.2); transition: transform 0.1s;
-            display: flex; align-items: center; gap: 8px;
+            padding: 10px 25px; border-radius: 30px; border: none;
+            color: white; font-size: 20px; cursor: pointer;
+            font-family: 'Bubblegum Sans', cursive;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.2); width: 45%;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
         }
         .action-btn:active { transform: translateY(4px); box-shadow: none; }
-
-        .clear-btn { background: #FF5722; box-shadow: 0 4px 0 #E64A19; }
-        .check-btn { background: #4CAF50; box-shadow: 0 4px 0 #2E7D32; animation: bounceBtn 2s infinite; }
         
-        @keyframes bounceBtn { 0%, 100% {transform: scale(1);} 50% {transform: scale(1.05);} }
-        @keyframes popIn { from {transform:scale(0);} to {transform:scale(1);} }
-        .shake { animation: shake 0.4s; }
-        @keyframes shake { 0%, 100% {transform:translateX(0);} 25% {transform:translateX(-10px);} 75% {transform:translateX(10px);} }
+        .btn-clear { background: #FF5722; }
+        .btn-check { background: #4CAF50; }
 
-        /* ADS */
-        .ad-box-rect {
-            width: 300px; height: 250px; background: #fff;
-            display: flex; justify-content: center; align-items: center;
-            margin: 20px 0; border: 2px dashed #ccc;
-        }
+      
+
         .ad-bottom {
-            position: fixed; bottom: 0; width: 100%; height: 50px;
-            background: #fff; border-top: 1px solid #ccc;
-            display: flex; justify-content: center; align-items: center; z-index: 9000;
+            position: fixed; bottom: 0; width: 100%; height: 60px;
+            background: #fff; display: flex; justify-content: center;
+            align-items: center; border-top: 2px solid #ddd; z-index: 9000;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
         }
 
-        /* MODALS */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); display: none;
-            justify-content: center; align-items: center; z-index: 11000;
+        /* --- MODALS (ABCD Style) --- */
+        .modal {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.85); display: none;
+            justify-content: center; align-items: center; z-index: 500;
+            backdrop-filter: blur(5px);
         }
-        .modal-box {
-            background: white; padding: 25px; border-radius: 25px;
-            text-align: center; width: 90%; max-width: 320px;
+        .modal-content { 
+            background: white; padding: 30px; border-radius: 25px; 
+            text-align: center; width: 85%; max-width: 320px;
+            box-shadow: 0 20px 0 rgba(0,0,0,0.1);
+            animation: slideUp 0.3s;
         }
+        
+        .modal-btn {
+            padding: 12px 40px; font-size: 22px; border: none; border-radius: 50px;
+            color: white; cursor: pointer; font-family: 'Bubblegum Sans', cursive;
+            margin-top: 15px; width: 80%; box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+        }
+        .modal-btn:active { transform: translateY(5px); box-shadow: none; }
+
+        /* Specific Modal Styles */
+        .btn-next { background: #2196F3; } /* Blue for Next */
+        .btn-retry { background: #FF9800; } /* Orange for Retry */
+        
+        .modal-icon { font-size: 70px; margin-bottom: 10px; display: block; }
+        .modal-title { font-size: 35px; margin: 0; }
+        .txt-correct { color: #4CAF50; }
+        .txt-wrong { color: #F44336; }
+
+        @keyframes pop { 0%{transform:scale(0.5);} 100%{transform:scale(1);} }
+        @keyframes slideUp { from{transform:translateY(50px); opacity:0;} to{transform:translateY(0); opacity:1;} }
+        .shake { animation: shake 0.4s; }
+        @keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-10px);} 75%{transform:translateX(10px);} }
+        
+        #langScreen { display: none; }
     </style>
 </head>
 <body>
 
-    <!-- 1. POPUNDER ADS -->
-    <script src="https://pl21772533.effectivegatecpm.com/8c/b6/66/8cb6663167876148ce98818f0eabaad8.js"></script>
-
-    <!-- START SCREEN -->
-    <div id="startScreen">
+    <!-- 1. START SCREEN -->
+    <div id="startScreen" class="screen">
         <a href="index.html" class="home-btn">🏠</a>
-        <h1 style="color: #4A148C; font-size: 35px; margin-bottom: 5px;">Spelling Bee 🐝</h1>
-        <p style="color: #fff; margin-top: 0;">Learn to Spell Words!</p>
+        <h1 style="color:white; font-size: 40px; margin-bottom: 10px;">Spelling Bee 🐝</h1>
         
-        <div class="ad-box-rect">
-            <script type="text/javascript">
-                atOptions = { 'key' : 'd30662a773f82e053b64b8591ab5444c', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
-                document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.highperformanceformat.com/d30662a773f82e053b64b8591ab5444c/invoke.js"></scr' + 'ipt>');
-            </script>
-        </div>
-        
-        <button class="play-btn" onclick="startGame()">▶ Start Game</button>
+       
+
+        <button class="big-btn btn-start" onclick="showLangScreen()">▶ Start Game</button>
     </div>
 
-    <!-- GAME WRAPPER -->
-    <div class="game-wrapper" id="gameWrapper">
+    <!-- 2. LANGUAGE SCREEN -->
+    <div id="langScreen" class="screen">
         <a href="index.html" class="home-btn">🏠</a>
-        <img src="talkingof.PNG" id="mascotImage" class="mascot-display" alt="Mascot">
+        <h2 style="color:white; font-size: 30px; margin-bottom:10px;">Choose Language</h2>
+        
+      
+
+        <div style="display:flex; gap:20px; width: 100%; justify-content: center; align-items: center;">
+            <button class="big-btn btn-eng" onclick="setLanguage('en')">🔤 English</button>
+            <button class="big-btn btn-hin" onclick="setLanguage('hi')">🕉️ Hindi</button>
+        </div>
+    </div>
+
+    <!-- 3. GAME AREA -->
+    <div id="gameWrapper">
+        <a href="index.html" class="home-btn">🏠</a>
+        <img src="talkingof.PNG" id="mascot" style="height:90px; margin-bottom:5px;">
         
         <div class="card" id="gameCard">
             <p style="margin:0; color:#888;">Spell this:</p>
             
-            <!-- Question Image -->
-            <div id="qImageContainer"></div>
-            
-            <!-- Answer Slots -->
-            <div class="answer-container" id="answerBox"></div>
+            <div id="qImg"></div>
 
-            <!-- Jumbled Keys -->
-            <div class="keyboard-area" id="keyboardBox"></div>
+            <div class="answer-box" id="slotsArea"></div>
 
-            <!-- Action Buttons -->
-            <div class="action-row">
-                <button class="action-btn clear-btn" onclick="clearSlots()">❌ Clear</button>
-                <button class="action-btn check-btn" onclick="checkAnswer()">✅ Check</button>
+            <div class="keyboard-box" id="keysArea"></div>
+
+            <!-- CONTROLS -->
+            <div class="controls">
+                <button class="action-btn btn-clear" onclick="clearInput()"><i class="fas fa-times"></i> Clear</button>
+                <button class="action-btn btn-check" onclick="checkAnswer()"><i class="fas fa-check"></i> Check</button>
             </div>
         </div>
     </div>
 
-    <!-- BOTTOM AD -->
-    <div class="ad-bottom">
-        <script type="text/javascript">
-            atOptions = { 'key' : '66159e73d9894e59c14c0570abaee84e', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-            document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.highperformanceformat.com/66159e73d9894e59c14c0570abaee84e/invoke.js"></scr' + 'ipt>');
-        </script>
-    </div>
+   
 
-    <!-- MODALS -->
-    <div class="modal-overlay" id="wrongModal">
-        <div class="modal-box">
-            <div style="font-size: 60px;">😵</div>
-            <h2 style="color: #F44336;">Wrong Spelling!</h2>
-            <button class="play-btn" style="background:#F44336; margin-top:10px;" onclick="closeWrongModal()">Try Again</button>
+    <!-- MODAL: WRONG -->
+    <div id="wrongModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-icon">😢</span>
+            <h2 class="modal-title txt-wrong">Wrong!</h2>
+            <button class="modal-btn btn-retry" onclick="closeModal()">Try Again</button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="finishModal">
-        <div class="modal-box">
-            <div style="font-size: 60px;">🏆</div>
-            <h2 style="color: #4CAF50;">You are a Master!</h2>
-            <p>All Words Completed!</p>
-            <button class="play-btn" style="background:#2196F3;" onclick="restartFullGame()">Play Again</button>
+    <!-- MODAL: CORRECT -->
+    <div id="correctModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-icon">🌟</span>
+            <h2 class="modal-title txt-correct">Correct!</h2>
+            <button class="modal-btn btn-next" onclick="nextLevel()">Next ➔</button>
         </div>
     </div>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
-        // --- SPELLING DATA ---
-        const spellData = [
-            { word: "CAT", img: "🐱" },
-            { word: "DOG", img: "🐶" },
-            { word: "BAT", img: "🦇" },
-            { word: "SUN", img: "☀️" },
-            { word: "ANT", img: "🐜" },
-            { word: "BUS", img: "🚌" },
-            { word: "CAR", img: "🚗" },
-            { word: "BALL", img: "⚽" },
-            { word: "FISH", img: "🐟" },
-            { word: "BIRD", img: "🐦" },
-            { word: "STAR", img: "⭐" },
-            { word: "TREE", img: "🌳" },
-            { word: "BOOK", img: "📖" },
-            { word: "LION", img: "🦁" },
-            { word: "DUCK", img: "🦆" },
-            { word: "APPLE", img: "🍎" },
-            { word: "HOUSE", img: "🏠" },
-            { word: "KITE", img: "🪁" },
-            { word: "MOON", img: "🌙" },
-            { word: "CAKE", img: "🎂" }
+        const gameData = [
+            { img: "🐱", en: "CAT", hi: "बिल्ली" },
+            { img: "🐶", en: "DOG", hi: "कुत्ता" },
+            { img: "🌞", en: "SUN", hi: "सूरज" },
+            { img: "🍎", en: "APPLE", hi: "सेब" },
+            { img: "🦇", en: "BAT", hi: "बल्ला" },
+            { img: "🚌", en: "BUS", hi: "बस" },
+            { img: "🚗", en: "CAR", hi: "गाड़ी" },
+            { img: "🐟", en: "FISH", hi: "मछली" },
+            { img: "🌳", en: "TREE", hi: "पेड़" },
+            { img: "🦁", en: "LION", hi: "शेर" },
+            { img: "🐘", en: "ELEPHANT", hi: "हाथी" },
+            { img: "🐯", en: "TIGER", hi: "बाघ" },
+            { img: "🦓", en: "ZEBRA", hi: "जेबरा" },
+            { img: "🐒", en: "MONKEY", hi: "बंदर" },
+            { img: "🐇", en: "RABBIT", hi: "खरगोश" },
+            { img: "🐼", en: "PANDA", hi: "पांडा" },
+            { img: "🦊", en: "FOX", hi: "लोमड़ी" },
+            { img: "🐄", en: "COW", hi: "गाय" },
+            { img: "🐐", en: "GOAT", hi: "बकरी" },
+            { img: "🦆", en: "DUCK", hi: "बत्तख" },
+            { img: "🦉", en: "OWL", hi: "उल्लू" },
+            { img: "🦜", en: "PARROT", hi: "तोता" },
+            { img: "🐔", en: "HEN", hi: "मुर्गी" },
+            { img: "🐦‍⬛", en: "CROW", hi: "कौवा" },
+            { img: "🦚", en: "PEACOCK", hi: "मोर" },
+            { img: "🐷", en: "PIG", hi: "सुअर" },
+            { img: "🐻", en: "BEAR", hi: "भालू" },
+            { img: "🐑", en: "SHEEP", hi: "भेड़" },
+            { img: "🐎", en: "HORSE", hi: "घोड़ा" },
+            { img: "🐸", en: "FROG", hi: "मेंढक" }
         ];
 
+        let currentLang = 'en'; 
         let currentIndex = 0;
         let currentWord = "";
-        let enteredLetters = [];
+        let enteredChars = [];
 
-        // --- 🔊 SOUND SYSTEM ---
-        function playSound(text) {
-            const mascot = document.getElementById('mascotImage');
+        function showLangScreen() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('langScreen').style.display = 'flex';
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('langScreen').style.display = 'none';
+            document.getElementById('gameWrapper').style.display = 'flex';
+            currentIndex = 0; 
+            loadLevel();
+        }
+
+        function playSound(text, isLetter = false) {
+            const mascot = document.getElementById('mascot');
             if(mascot) mascot.src = "talkingof.gif";
 
             let fileName = "";
-            if (text.length === 1) {
-                // A-Z letters
-                fileName = text.toLowerCase() + ".mp3";
-            } else if (text.startsWith("Spell ")) {
-                let wordOnly = text.replace("Spell ", "").toLowerCase();
-                fileName = wordOnly + ".mp3";
+            let currentData = gameData[currentIndex];
+
+            if(isLetter) {
+                if(currentLang === 'en') fileName = text.toLowerCase() + ".mp3";
+                else fileName = "TTS_ONLY"; 
+            } else if (text === "Correct" || text === "Wrong") {
+                fileName = "sys_" + text.toLowerCase() + ".mp3";
             } else {
-                fileName = text.toLowerCase() + ".mp3";
+                fileName = currentData.en.toLowerCase() + "Spelling.mp3";
             }
 
             let audio = new Audio(fileName);
             audio.onended = () => { if(mascot) mascot.src = "talkingof.PNG"; };
+            
             audio.onerror = () => {
-                // Fallback TTS
                 const synth = window.speechSynthesis;
-                const u = new SpeechSynthesisUtterance(text);
+                let speakText = text;
+                if(!isLetter && text !== "Correct" && text !== "Wrong") {
+                     speakText = currentLang === 'en' ? currentData.en : currentData.hi;
+                }
+                const u = new SpeechSynthesisUtterance(speakText);
+                u.lang = currentLang === 'hi' ? 'hi-IN' : 'en-US';
                 u.rate = 0.9;
                 u.onend = () => { if(mascot) mascot.src = "talkingof.PNG"; };
                 synth.speak(u);
             };
+
             audio.play().catch(e => {
                 const synth = window.speechSynthesis;
                 const u = new SpeechSynthesisUtterance(text);
+                u.onend = () => { if(mascot) mascot.src = "talkingof.PNG"; };
                 synth.speak(u);
-                if(mascot) mascot.src = "talkingof.PNG";
             });
         }
 
-        // --- GAME LOGIC ---
-        function startGame() {
-            document.getElementById('startScreen').style.display = 'none';
-            document.getElementById('gameWrapper').style.display = 'flex';
-            
-            const saved = localStorage.getItem('spellingLevel');
-            if(saved && !isNaN(saved)) { currentIndex = parseInt(saved); } 
-            else { currentIndex = 0; }
-            
-            loadLevel();
-        }
-
         function loadLevel() {
-            if(!spellData[currentIndex]) currentIndex = 0;
-            if(currentIndex >= spellData.length) {
-                document.getElementById('finishModal').style.display = 'flex';
-                if(typeof confetti === 'function') confetti();
-                return;
-            }
+            if(currentIndex >= gameData.length) currentIndex = 0; 
 
-            const data = spellData[currentIndex];
-            currentWord = data.word;
-            enteredLetters = [];
+            const data = gameData[currentIndex];
+            currentWord = currentLang === 'en' ? data.en : data.hi;
+            enteredChars = [];
 
-            // 1. Show Image
-            const imgBox = document.getElementById('qImageContainer');
+            const imgBox = document.getElementById('qImg');
             if(data.img.includes('.')) {
-                imgBox.innerHTML = `<img src="${data.img}" class="question-img img-mode">`;
+                imgBox.innerHTML = `<img src="${data.img}" class="img-mode">`;
             } else {
                 imgBox.innerHTML = `<div class="question-img">${data.img}</div>`;
             }
 
-            // 2. Speak Instruction
-            setTimeout(() => { playSound("Spell " + currentWord); }, 500);
+            setTimeout(() => playSound("MAIN"), 300);
 
-            // 3. Create Empty Slots
-            const answerBox = document.getElementById('answerBox');
-            answerBox.innerHTML = "";
-            for(let i=0; i<currentWord.length; i++) {
-                const slot = document.createElement('div');
-                slot.className = 'letter-slot';
-                slot.id = 'slot-'+i;
-                answerBox.appendChild(slot);
-            }
-
-            // 4. Create Jumbled Keyboard (Correct + 2 Decoys)
-            let letters = currentWord.split('');
-            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            letters.push(alphabet[Math.floor(Math.random() * 26)]); 
-            letters.push(alphabet[Math.floor(Math.random() * 26)]); 
-            letters.sort(() => Math.random() - 0.5); 
-
-            const keyBox = document.getElementById('keyboardBox');
-            keyBox.innerHTML = "";
-            
-            // Generate Buttons
-            letters.forEach((l, idx) => {
-                const key = document.createElement('button');
-                key.className = 'key-btn';
-                key.innerText = l;
-                key.id = 'key-'+idx;
-                key.onclick = () => {
-                    playSound(l);
-                    handleInput(l, key);
-                };
-                keyBox.appendChild(key);
+            const slotsArea = document.getElementById('slotsArea');
+            slotsArea.innerHTML = "";
+            let charArray = Array.from(currentWord); 
+            charArray.forEach((c, i) => {
+                let slot = document.createElement('div');
+                slot.className = 'slot';
+                slot.id = 'slot-' + i;
+                slotsArea.appendChild(slot);
             });
 
-            // 5. 🔥 AUTO PLAY SEQUENCE (SPEAK ALL BUTTONS) 🔥
-            const allKeyButtons = document.querySelectorAll('.key-btn');
-            let delayTimer = 2500; // Start after 2.5 seconds (giving time for "Spell Word")
+            let keys = [...charArray];
+            if(currentLang === 'en') {
+                const alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                keys.push(alpha[Math.floor(Math.random()*26)]);
+                keys.push(alpha[Math.floor(Math.random()*26)]);
+            } else {
+                const hAlpha = "कखगघचछजझटठडढणतथदधनपफबभमयरलवशषसह";
+                keys.push(hAlpha[Math.floor(Math.random()*hAlpha.length)]);
+                keys.push(hAlpha[Math.floor(Math.random()*hAlpha.length)]);
+            }
+            keys.sort(() => Math.random() - 0.5);
 
-            allKeyButtons.forEach((btn) => {
-                const letter = btn.innerText;
-                
-                setTimeout(() => {
-                    // Play Sound of specific letter on screen
-                    playSound(letter);
-
-                    // Visual Highlight
-                    btn.classList.add('key-highlight');
-                    setTimeout(() => { btn.classList.remove('key-highlight'); }, 600);
-
-                }, delayTimer);
-
-                // Increment delay for next letter
-                delayTimer += 1200; // 1.2 second gap
+            const keysArea = document.getElementById('keysArea');
+            keysArea.innerHTML = "";
+            keys.forEach((k, idx) => {
+                let btn = document.createElement('button');
+                btn.className = 'key-btn';
+                btn.innerText = k;
+                btn.id = 'key-' + idx;
+                btn.onclick = () => handleKeyClick(k, btn);
+                keysArea.appendChild(btn);
             });
         }
 
-        function handleInput(letter, btnElement) {
-            if(enteredLetters.length < currentWord.length) {
-                enteredLetters.push(letter);
+        function handleKeyClick(char, btn) {
+            let maxLen = Array.from(currentWord).length;
+            if(enteredChars.length < maxLen) {
+                enteredChars.push(char);
+                let slotIdx = enteredChars.length - 1;
+                let slot = document.getElementById('slot-' + slotIdx);
+                slot.innerText = char;
+                slot.classList.add('filled');
+                btn.classList.add('used');
                 
-                const slotIndex = enteredLetters.length - 1;
-                const slot = document.getElementById('slot-'+slotIndex);
-                if(slot) {
-                    slot.innerText = letter;
-                    slot.classList.add('slot-filled');
+                playSound(char, true);
+
+                // AUTO CHECK
+                if(enteredChars.length === maxLen) {
+                    setTimeout(checkAnswer, 300);
                 }
-                
-                btnElement.classList.add('key-used');
-                btnElement.classList.remove('key-highlight');
             }
         }
 
-        function clearSlots() {
-            enteredLetters = [];
-            const slots = document.querySelectorAll('.letter-slot');
-            slots.forEach(s => {
-                s.innerText = "";
-                s.classList.remove('slot-filled');
-                s.style.backgroundColor = '#F3E5F5';
-            });
-            const keys = document.querySelectorAll('.key-btn');
-            keys.forEach(k => k.classList.remove('key-used'));
+        function clearInput() {
+            enteredChars = [];
+            document.querySelectorAll('.slot').forEach(s => { s.innerText = ""; s.classList.remove('filled'); });
+            document.querySelectorAll('.key-btn').forEach(k => { k.classList.remove('used'); });
         }
 
         function checkAnswer() {
-            if(enteredLetters.length < currentWord.length) {
-                playSound("Complete the word"); 
-                const card = document.getElementById('gameCard');
-                card.classList.add('shake');
-                setTimeout(() => card.classList.remove('shake'), 400);
-                return;
-            }
-
-            const attempt = enteredLetters.join('');
+            let attempt = enteredChars.join('');
             if(attempt === currentWord) {
                 if(typeof confetti === 'function') confetti();
                 playSound("Correct"); 
-                
-                const slots = document.querySelectorAll('.letter-slot');
-                slots.forEach(s => s.style.backgroundColor = '#C8E6C9');
-
-                setTimeout(() => {
-                    currentIndex++;
-                    localStorage.setItem('spellingLevel', currentIndex);
-                    loadLevel();
-                }, 1500);
-
+                document.getElementById('correctModal').style.display = 'flex';
             } else {
                 playSound("Wrong"); 
                 const card = document.getElementById('gameCard');
                 card.classList.add('shake');
                 setTimeout(() => card.classList.remove('shake'), 400);
-                
-                setTimeout(() => {
-                    document.getElementById('wrongModal').style.display = 'flex';
-                }, 600);
+                document.getElementById('wrongModal').style.display = 'flex';
             }
         }
 
-        function closeWrongModal() {
+        function closeModal() {
             document.getElementById('wrongModal').style.display = 'none';
-            clearSlots();
+            // Auto Clear on Retry
+            clearInput();
         }
 
-        function restartFullGame() {
-            currentIndex = 0;
-            localStorage.setItem('spellingLevel', 0);
-            location.reload();
+        function nextLevel() {
+            document.getElementById('correctModal').style.display = 'none';
+            currentIndex++;
+            loadLevel();
         }
     </script>
 </body>
