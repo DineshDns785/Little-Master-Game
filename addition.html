@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Little Master: Addition</title>
+    
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Confetti Script -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- 👇👇👇 AAPKI API KEY YAHAN LAGA DI HAI 👇👇👇 -->
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=wBoTxUO4"></script>
+
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            /* Mint Green Theme */
+            background: linear-gradient(180deg, #80CBC4 0%, #009688 100%);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            color: #333;
+        }
+
+        /* Home Button */
+        .home-btn {
+            position: absolute; top: 15px; left: 15px; background: white;
+            border: 3px solid #fff; border-radius: 50%; width: 55px; height: 55px;
+            font-size: 30px; cursor: pointer; z-index: 200; display: flex;
+            align-items: center; justify-content: center; text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .home-btn:active { transform: scale(0.9); }
+
+        /* Start Screen */
+        #startScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, #4DB6AC 0%, #00796B 100%);
+            z-index: 10000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+        }
+        .play-btn {
+            background: #FFEB3B; color: #333; font-size: 28px; padding: 15px 50px;
+            border: none; border-radius: 50px; font-weight: bold; cursor: pointer;
+            animation: pulse 1.5s infinite; margin-top: 20px; /* Thoda gap badhaya kyunki ad hat gaya */
+            box-shadow: 0 6px 0 #FBC02D;
+        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* Game Wrapper */
+        .game-wrapper {
+            flex: 1; display: none; flex-direction: column;
+            align-items: center; justify-content: center; width: 100%; padding-bottom: 20px;
+        }
+
+        /* Mascot */
+        .mascot-display { height: 90px; margin-bottom: 5px; transition: transform 0.2s; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2)); }
+        .mascot-jump-anim { animation: mascotJump 0.5s; }
+        @keyframes mascotJump { 0%,100% {transform:translateY(0);} 50% {transform:translateY(-20px);} }
+
+        /* Card */
+        .card {
+            background: white; padding: 15px; border-radius: 30px; width: 90%;
+            max-width: 360px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 5px solid #fff; display: flex; flex-direction: column; justify-content: center;
+        }
+        .question-area {
+            background: #E0F2F1; border-radius: 20px; padding: 15px 5px;
+            margin-bottom: 20px; border: 2px dashed #009688;
+        }
+        
+        .visual-math { 
+            font-size: 32px; margin-bottom: 15px; letter-spacing: 5px; 
+            min-height: 50px; 
+        }
+        
+        /* SHADOW ADDED TO EMOJIS */
+        .emoji-item {
+            display: inline-block;
+            filter: drop-shadow(2px 4px 2px rgba(0,0,0,0.3)); /* Shadow here */
+            transition: transform 0.2s;
+        }
+        
+        /* Jump Animation */
+        .jump-active {
+            animation: emojiJump 0.5s ease-in-out;
+            transform-origin: bottom;
+        }
+        @keyframes emojiJump {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-40px) scale(1.4); }
+            100% { transform: translateY(0) scale(1); }
+        }
+
+        .number-math {
+            font-size: 50px; font-weight: 700; color: #00796B;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .math-symbol { color: #FF9800; filter: drop-shadow(0 2px 0 rgba(0,0,0,0.1)); }
+        
+        .success-text { font-size: 45px; color: #4CAF50; font-weight: bold; animation: popIn 0.3s; }
+        @keyframes popIn { from {transform:scale(0);} to {transform:scale(1);} }
+
+        /* Options */
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .option-btn {
+            background: white; border: 3px solid #E0E0E0; border-radius: 20px; height: 80px;
+            display: flex; align-items: center; justify-content: center; font-size: 40px;
+            font-weight: bold; color: #555; cursor: pointer; box-shadow: 0 5px 0 #E0E0E0;
+            transition: transform 0.1s;
+        }
+        .option-btn:active { transform: translateY(5px); box-shadow: none; }
+        .disabled-btn { opacity: 0.6; pointer-events: none; background: #f9f9f9; }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); display: none;
+            justify-content: center; align-items: center; z-index: 11000;
+            backdrop-filter: blur(5px);
+        }
+        .modal-box {
+            background: white; padding: 30px; border-radius: 25px;
+            text-align: center; width: 85%; max-width: 320px;
+            box-shadow: 0 20px 0 rgba(0,0,0,0.1); animation: slideUp 0.3s;
+        }
+        .modal-btn {
+            padding: 12px 40px; font-size: 22px; border: none; border-radius: 50px;
+            color: white; cursor: pointer; font-family: 'Fredoka', sans-serif;
+            margin-top: 15px; width: 80%; box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+        }
+        .btn-retry { background: #FF9800; }
+        @keyframes slideUp { from{transform:translateY(50px); opacity:0;} to{transform:translateY(0); opacity:1;} }
+    </style>
+</head>
+<body>
+
+    <!-- START SCREEN -->
+    <div id="startScreen">
+        <a href="index.html" class="home-btn">🏠</a>
+        <h1 style="color: #fff;">Math Time ➕</h1>
+        <p style="color: #B2DFDB;">Let's Count & Add!</p>
+        
+        <button class="play-btn" onclick="startGame()">▶ Play</button>
+    </div>
+
+    <!-- MAIN GAME -->
+    <div class="game-wrapper" id="gameWrapper">
+        <a href="index.html" class="home-btn">🏠</a>
+        <img src="talkingof.PNG" id="mascotImage" class="mascot-display" alt="Mascot">
+        
+        <div class="card">
+            <div style="text-align: left; font-size: 14px; color: #888; margin-bottom: 5px;">Let's Count!</div>
+            
+            <div class="question-area" id="qArea">
+                <!-- Content injected via JS -->
+            </div>
+
+            <div class="options-grid" id="optionsBox"></div>
+        </div>
+    </div>
+
+    <!-- WRONG MODAL -->
+    <div class="modal-overlay" id="wrongModal">
+        <div class="modal-box">
+            <div style="font-size: 60px;">😢</div>
+            <h2 class="modal-title txt-wrong" style="color:#F44336">Wrong!</h2>
+            <button class="modal-btn btn-retry" onclick="resetLevel()">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        const icons = ['🍎', '🍌', '⭐', '🍬', '🎈', '🍪', '🐶', '🐱'];
+        let currentNum1 = 0;
+        let currentNum2 = 0;
+        let currentAnswer = 0;
+        let isCounting = false;
+
+        function startGame() {
+            // API WAKE UP CALL
+            if(window.responsiveVoice) {
+                // Initialize with a silent hello to wake up audio on mobile
+                responsiveVoice.speak("", "UK English Female");
+            }
+            
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('gameWrapper').style.display = 'flex';
+            generateQuestion();
+        }
+
+        // --- API SPEECH FUNCTION ---
+        function speak(text, onEndCallback) {
+            if(window.responsiveVoice) {
+                // Mascot Start
+                document.getElementById('mascotImage').src = "talkingof.gif";
+                
+                responsiveVoice.speak(text, "UK English Female", {
+                    onend: function() {
+                        // Mascot Stop
+                        document.getElementById('mascotImage').src = "talkingof.PNG";
+                        if(onEndCallback) onEndCallback();
+                    },
+                    rate: 0.9 // Thoda dheere bolega
+                });
+            } else {
+                console.log("Audio API not ready yet");
+                if(onEndCallback) onEndCallback();
+            }
+        }
+
+        function generateQuestion() {
+            isCounting = true;
+            
+            currentNum1 = Math.floor(Math.random() * 4) + 1; 
+            currentNum2 = Math.floor(Math.random() * 4) + 1; 
+            currentAnswer = currentNum1 + currentNum2;
+
+            const icon = icons[Math.floor(Math.random() * icons.length)];
+
+            let visualHTML1 = "";
+            for(let i=0; i<currentNum1; i++) visualHTML1 += `<span class="emoji-item">${icon}</span> `;
+            
+            let visualHTML2 = "";
+            for(let i=0; i<currentNum2; i++) visualHTML2 += `<span class="emoji-item">${icon}</span> `;
+
+            const qArea = document.getElementById('qArea');
+            qArea.innerHTML = `
+                <div class="visual-math" id="visualContainer">
+                    <span id="group1">${visualHTML1}</span>
+                    <span class="math-symbol">+</span>
+                    <span id="group2">${visualHTML2}</span>
+                </div>
+                <div class="number-math">
+                    <span>${currentNum1}</span> 
+                    <span class="math-symbol">+</span> 
+                    <span>${currentNum2}</span> 
+                    <span class="math-symbol">=</span> 
+                    <span style="color:#ccc">?</span>
+                </div>
+            `;
+
+            prepareOptions();
+            setTimeout(startCountingSequence, 500);
+        }
+
+        async function startCountingSequence() {
+            const group1 = document.getElementById('group1').children;
+            const group2 = document.getElementById('group2').children;
+            
+            let count = 0;
+
+            // Count Group 1
+            for (let item of group1) {
+                count++;
+                await animateAndSpeak(item, count);
+            }
+
+            await new Promise(r => setTimeout(r, 400));
+
+            // Count Group 2
+            for (let item of group2) {
+                count++;
+                await animateAndSpeak(item, count);
+            }
+
+            // Final Question
+            setTimeout(() => {
+                speak(`${currentNum1} plus ${currentNum2} equals?`);
+                enableOptions();
+            }, 600);
+        }
+
+        function animateAndSpeak(element, number) {
+            return new Promise(resolve => {
+                element.classList.add('jump-active');
+                
+                // Speak number using API with callback
+                speak(number.toString(), () => {
+                    element.classList.remove('jump-active');
+                    resolve();
+                });
+            });
+        }
+
+        function prepareOptions() {
+            let options = [currentAnswer];
+            while(options.length < 4) {
+                let r = Math.floor(Math.random() * 9) + 1;
+                if(r !== currentAnswer && !options.includes(r)) options.push(r);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const box = document.getElementById('optionsBox');
+            box.innerHTML = "";
+            
+            options.forEach(num => {
+                const btn = document.createElement('div');
+                btn.className = 'option-btn disabled-btn';
+                btn.innerText = num;
+                btn.onclick = () => {
+                    if(!isCounting) {
+                        if(num === currentAnswer) handleSuccess();
+                        else handleWrong(btn);
+                    }
+                };
+                box.appendChild(btn);
+            });
+        }
+
+        function enableOptions() {
+            isCounting = false;
+            const btns = document.querySelectorAll('.option-btn');
+            btns.forEach(btn => btn.classList.remove('disabled-btn'));
+        }
+
+        function handleSuccess() {
+            if(typeof confetti === 'function') confetti();
+            
+            const qArea = document.getElementById('qArea');
+            qArea.innerHTML = `
+                <div class="success-text">Correct!</div>
+                <div class="number-math" style="color:#4CAF50">${currentAnswer}</div>
+            `;
+            
+            speak(`Correct! The answer is ${currentAnswer}`);
+
+            const mascot = document.getElementById('mascotImage');
+            mascot.classList.add('mascot-jump-anim');
+            setTimeout(() => mascot.classList.remove('mascot-jump-anim'), 600);
+
+            setTimeout(generateQuestion, 2500);
+        }
+
+        function handleWrong(btn) {
+            speak("Try Again");
+            btn.style.background = "#FFCDD2";
+            btn.style.borderColor = "#F44336";
+            document.getElementById('wrongModal').style.display = 'flex';
+        }
+
+        function resetLevel() {
+            document.getElementById('wrongModal').style.display = 'none';
+            const btns = document.querySelectorAll('.option-btn');
+            btns.forEach(b => {
+                b.style.background = 'white';
+                b.style.borderColor = '#E0E0E0';
+            });
+            speak("Try Again. " + currentNum1 + " plus " + currentNum2 + " equals?");
+        }
+    </script>
+</body>
+</html>

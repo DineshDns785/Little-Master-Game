@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Little Master - Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .admin-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .admin-header {
+            background: linear-gradient(to right, #FF5252, #FF9800);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .admin-header h1 {
+            font-size: 32px;
+        }
+        
+        .admin-content {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+            font-size: 18px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        
+        .form-input:focus {
+            border-color: #FF9800;
+            outline: none;
+        }
+        
+        .file-upload {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .file-upload:hover {
+            border-color: #FF9800;
+            background: #fff8e1;
+        }
+        
+        .file-upload i {
+            font-size: 48px;
+            color: #FF9800;
+            margin-bottom: 15px;
+        }
+        
+        .preview-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .image-preview {
+            max-width: 200px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0d8bf2;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #3d8b40;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+        
+        .games-list {
+            margin-top: 40px;
+            border-top: 2px solid #eee;
+            padding-top: 30px;
+        }
+        
+        .game-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .game-info h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .game-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .back-btn {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .back-btn a {
+            color: #2196F3;
+            text-decoration: none;
+            font-size: 18px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .login-title {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        .login-error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div style="font-size: 48px; color: #FF9800;">
+            <i class="fas fa-graduation-cap"></i>
+        </div>
+        <h1 class="login-title">Admin Login</h1>
+        <div id="loginError" class="login-error">
+            Invalid username or password
+        </div>
+        <div style="margin-bottom: 20px;">
+            <input type="text" id="adminUsername" class="form-input" placeholder="Username">
+        </div>
+        <div style="margin-bottom: 30px;">
+            <input type="password" id="adminPassword" class="form-input" placeholder="Password">
+        </div>
+        <button class="btn btn-primary" onclick="login()" style="width: 100%;">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+        <p style="margin-top: 20px; color: #666; font-size: 14px;">
+            Username: admin | Password: admin123
+        </p>
+    </div>
+    
+    <!-- Admin Panel (Hidden by default) -->
+    <div id="adminPanel" class="admin-container" style="display: none;">
+        <div class="admin-header">
+            <h1><i class="fas fa-gamepad"></i> Game Upload Panel</h1>
+            <p>Upload new games for Little Master App</p>
+        </div>
+        
+        <div class="admin-content">
+            <h2 style="margin-bottom: 25px; color: #333;">Upload New Game</h2>
+            
+            <div class="form-group">
+                <label class="form-label">Game Name</label>
+                <input type="text" id="gameName" class="form-input" placeholder="Example: ABCD Learning">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Game Icon Image</label>
+                <div class="file-upload" onclick="document.getElementById('iconImage').click()">
+                    <i class="fas fa-image"></i>
+                    <p>Click to upload game icon image</p>
+                    <p id="iconFileName" style="color: #666; margin-top: 10px;">No file selected</p>
+                    <input type="file" id="iconImage" accept="image/*" style="display: none;" onchange="previewIcon(event)">
+                </div>
+                <div class="preview-container">
+                    <img id="iconPreview" class="image-preview" style="display: none;">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Game Sound (MP3)</label>
+                <div class="file-upload" onclick="document.getElementById('gameSound').click()">
+                    <i class="fas fa-music"></i>
+                    <p>Click to upload game sound (MP3)</p>
+                    <p id="soundFileName" style="color: #666; margin-top: 10px;">No file selected</p>
+                    <input type="file" id="gameSound" accept="audio/*" style="display: none;" onchange="previewSound(event)">
+                </div>
+                <div class="preview-container">
+                    <audio id="soundPreview" controls style="margin-top: 10px; display: none;"></audio>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Game HTML Code</label>
+                <textarea id="gameHTML" class="form-input" rows="10" placeholder="Paste your complete HTML code for the game here..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Game Category</label>
+                <select id="gameCategory" class="form-input">
+                    <option value="first">First Menu (ABCD, 123, etc.)</option>
+                    <option value="more">More Games (Animals, Fruits, etc.)</option>
+                </select>
+            </div>
+            
+            <div style="display: flex; gap: 15px; margin-top: 30px;">
+                <button class="btn btn-success" onclick="uploadGame()">
+                    <i class="fas fa-upload"></i> Upload Game
+                </button>
+                <button class="btn btn-primary" onclick="resetForm()">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+            
+            <!-- Existing Games List -->
+            <div class="games-list">
+                <h2 style="margin-bottom: 20px; color: #333;">Existing Games</h2>
+                <div id="existingGames">
+                    <!-- Games will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="back-btn">
+                <a href="index.html">
+                    <i class="fas fa-arrow-left"></i> Back to Home Page
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple login system
+        function login() {
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            if (username === 'admin' && password === 'admin123') {
+                localStorage.setItem('adminLoggedIn', 'true');
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadExistingGames();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+        
+        // Check if already logged in
+        window.onload = function() {
+            if (localStorage.getItem('adminLoggedIn') === 'true') {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadExistingGames();
+            }
+        };
+        
+        // Preview icon image
+        function previewIcon(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('iconFileName').textContent = file.name;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('iconPreview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // Preview sound
+        function previewSound(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('soundFileName').textContent = file.name;
+                
+                const preview = document.getElementById('soundPreview');
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = 'block';
+            }
+        }
+        
+        // Upload game function
+        function uploadGame() {
+            const gameName = document.getElementById('gameName').value;
+            const gameHTML = document.getElementById('gameHTML').value;
+            const gameCategory = document.getElementById('gameCategory').value;
+            const iconFile = document.getElementById('iconImage').files[0];
+            const soundFile = document.getElementById('gameSound').files[0];
+            
+            if (!gameName || !gameHTML) {
+                alert('Please fill in Game Name and HTML Code');
+                return;
+            }
+            
+            // Create a unique ID for the game
+            const gameId = 'game_' + Date.now();
+            
+            // Convert files to base64
+            const reader1 = new FileReader();
+            const reader2 = new FileReader();
+            
+            reader1.onload = function(e1) {
+                const iconBase64 = e1.target.result;
+                
+                reader2.onload = function(e2) {
+                    const soundBase64 = e2.target.result;
+                    
+                    // Create game object
+                    const gameData = {
+                        id: gameId,
+                        name: gameName,
+                        icon: iconBase64,
+                        sound: soundBase64,
+                        html: gameHTML,
+                        category: gameCategory,
+                        date: new Date().toISOString()
+                    };
+                    
+                    // Save to localStorage
+                    let games = JSON.parse(localStorage.getItem('littleMasterGames')) || [];
+                    games.push(gameData);
+                    localStorage.setItem('littleMasterGames', JSON.stringify(games));
+                    
+                    // Update home page games list
+                    updateHomePageGames();
+                    
+                    alert('Game uploaded successfully!');
+                    resetForm();
+                    loadExistingGames();
+                };
+                
+                if (soundFile) {
+                    reader2.readAsDataURL(soundFile);
+                } else {
+                    reader2.onload({ target: { result: '' } });
+                }
+            };
+            
+            if (iconFile) {
+                reader1.readAsDataURL(iconFile);
+            } else {
+                reader1.onload({ target: { result: '' } });
+            }
+        }
+        
+        // Load existing games
+        function loadExistingGames() {
+            const games = JSON.parse(localStorage.getItem('littleMasterGames')) || [];
+            const container = document.getElementById('existingGames');
+            
+            if (games.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">No games uploaded yet.</p>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            games.forEach((game, index) => {
+                const gameItem = document.createElement('div');
+                gameItem.className = 'game-item';
+                gameItem.innerHTML = `
+                    <div class="game-info">
+                        <h3>${game.name}</h3>
+                        <p style="color: #666;">Category: ${game.category === 'first' ? 'First Menu' : 'More Games'}</p>
+                        <p style="color: #888; font-size: 14px;">Uploaded: ${new Date(game.date).toLocaleDateString()}</p>
+                    </div>
+                    <div class="game-actions">
+                        <button class="btn btn-danger" onclick="deleteGame(${index})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                `;
+                container.appendChild(gameItem);
+            });
+        }
+        
+        // Delete game
+        function deleteGame(index) {
+            if (confirm('Are you sure you want to delete this game?')) {
+                let games = JSON.parse(localStorage.getItem('littleMasterGames')) || [];
+                games.splice(index, 1);
+                localStorage.setItem('littleMasterGames', JSON.stringify(games));
+                loadExistingGames();
+                updateHomePageGames();
+                alert('Game deleted successfully!');
+            }
+        }
+        
+        // Reset form
+        function resetForm() {
+            document.getElementById('gameName').value = '';
+            document.getElementById('gameHTML').value = '';
+            document.getElementById('iconImage').value = '';
+            document.getElementById('gameSound').value = '';
+            document.getElementById('iconFileName').textContent = 'No file selected';
+            document.getElementById('soundFileName').textContent = 'No file selected';
+            document.getElementById('iconPreview').style.display = 'none';
+            document.getElementById('soundPreview').style.display = 'none';
+        }
+        
+        // Update home page with new games
+        function updateHomePageGames() {
+            // This function would be called to update the main home page
+            // In a real app, you might need to trigger a refresh on the home page
+            console.log('Home page games updated');
+        }
+    </script>
+</body>
+</html>

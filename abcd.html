@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Little Master: ABCD</title>
+    
+    <!-- Kids Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet">
+    
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Bubblegum Sans', cursive;
+            /* NEW THEME: Candy Purple */
+            background: linear-gradient(180deg, #F3E5F5 0%, #BA68C8 100%);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            color: #333;
+        }
+
+        /* --- HOME BUTTON --- */
+        .home-btn {
+            position: absolute; top: 15px; left: 15px;
+            background: white; border: none; border-radius: 50%;
+            width: 45px; height: 45px; font-size: 24px;
+            cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+            z-index: 200; display: flex; align-items: center;
+            justify-content: center; text-decoration: none;
+        }
+        .home-btn:active { transform: translateY(3px); box-shadow: none; }
+
+        /* --- START SCREEN --- */
+        #startScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, #F3E5F5 0%, #BA68C8 100%);
+            z-index: 10000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+        }
+
+        .ad-box-rect {
+            width: 300px; height: 250px; background: #fff;
+            display: flex; justify-content: center; align-items: center;
+            margin: 20px 0; border: 2px dashed #8E24AA; border-radius: 15px;
+            overflow: hidden; position: relative; z-index: 1;
+        }
+
+        .play-btn {
+            background: #FFCA28; color: #5D4037; font-size: 30px;
+            padding: 15px 60px; border: none; border-radius: 50px;
+            font-family: 'Bubblegum Sans', cursive; 
+            box-shadow: 0 6px 0 #FF8F00;
+            cursor: pointer; animation: pulse 1.5s infinite; position: relative; z-index: 100;
+        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* --- GAME AREA --- */
+        .game-wrapper {
+            flex: 1; display: none; flex-direction: column;
+            align-items: center; justify-content: center;
+            width: 100%; padding-bottom: 60px; padding-top: 10px;
+        }
+
+        /* --- MASCOT --- */
+        .mascot-display {
+            height: 110px; width: auto; display: block;
+            margin: 0 auto 5px auto; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
+            transition: transform 0.2s;
+        }
+        
+        .mascot-jump { animation: jumpHappy 0.6s ease-in-out; }
+        @keyframes jumpHappy {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.1); }
+        }
+
+        .header { width: 90%; display: flex; justify-content: center; margin-bottom: 5px; }
+        .level-badge {
+            background: white; padding: 5px 25px; border-radius: 30px;
+            color: #8E24AA; font-size: 24px; box-shadow: 0 3px 0 rgba(0,0,0,0.1);
+        }
+
+        .card {
+            background: white; padding: 10px; border-radius: 25px;
+            width: 90%; max-width: 350px; text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 4px solid #fff;
+            margin-top: 10px;
+            min-height: 200px; /* Stable Size */
+            display: flex; flex-direction: column; justify-content: center;
+        }
+
+        /* --- QUESTION / SUCCESS TEXT --- */
+        .big-letter {
+            font-size: 100px; color: #8E24AA; text-shadow: 3px 3px 0 #E1BEE7;
+            margin: 0; line-height: 1.1; cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Success Message Style */
+        .success-message {
+            font-size: 55px;
+            color: #4CAF50;
+            text-shadow: 2px 2px 0 #C8E6C9;
+        }
+
+        /* --- BUTTONS --- */
+        .options-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;
+        }
+
+        .option-btn {
+            border: 4px solid #fff; font-size: 40px; padding: 15px 5px;
+            border-radius: 25px; font-family: 'Bubblegum Sans', 'Arial', sans-serif;
+            cursor: pointer; color: #333; transition: all 0.1s; position: relative;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.2), 0 15px 20px rgba(0,0,0,0.1);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .option-btn:active { transform: translateY(8px); box-shadow: 0 0 0 rgba(0,0,0,0.2), inset 0 5px 10px rgba(0,0,0,0.1); }
+
+        .btn-c1 { background: #FFEB3B; } .btn-c2 { background: #E1BEE7; }
+        .btn-c3 { background: #C8E6C9; } .btn-c4 { background: #FFCCBC; }
+
+        .btn-correct { background: #4CAF50 !important; color: white !important; box-shadow: 0 0 20px #4CAF50 !important; transform: scale(1.1); }
+        .btn-wrong { background: #F44336 !important; color: white !important; animation: shake 0.4s; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+
+        /* --- ADS --- */
+        .ad-bottom {
+            position: fixed; bottom: 0; width: 100%; height: 50px;
+            background: #fff; display: flex; justify-content: center;
+            align-items: center; border-top: 1px solid #ddd; z-index: 9000;
+        }
+
+        /* --- WRONG MODAL --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); display: none;
+            justify-content: center; align-items: center; z-index: 11000;
+        }
+        .modal-box {
+            background: white; padding: 20px; border-radius: 20px;
+            text-align: center; width: 90%; max-width: 340px;
+        }
+        .btn-modal {
+            margin-top: 10px; padding: 10px 40px; font-size: 20px;
+            border: none; border-radius: 50px; color: white;
+            cursor: pointer; font-family: 'Bubblegum Sans', cursive; width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. POPUNDER ADS -->
+    <script src="https://pl21772533.effectivegatecpm.com/8c/b6/66/8cb6663167876148ce98818f0eabaad8.js"></script>
+
+    <!-- 2. START SCREEN -->
+    <div id="startScreen">
+        <a href="index.html" class="home-btn" style="position:absolute; top:20px; left:20px;">🏠</a>
+        <h1 style="color: #8E24AA; font-size: 50px; margin: 10px; text-shadow: 2px 2px 0px #fff;">ABCD</h1>
+        <div class="ad-box-rect">
+            <script type="text/javascript">
+                atOptions = { 'key' : 'd30662a773f82e053b64b8591ab5444c', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+                document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.highperformanceformat.com/d30662a773f82e053b64b8591ab5444c/invoke.js"></scr' + 'ipt>');
+            </script>
+        </div>
+        <button class="play-btn" onclick="startGame()">▶ Start Game</button>
+    </div>
+
+    <!-- 3. GAME AREA -->
+    <div class="game-wrapper" id="gameWrapper">
+        <a href="index.html" class="home-btn">🏠</a>
+        
+        <!-- MASCOT -->
+        <img src="talkingof.PNG" id="mascotImage" class="mascot-display" alt="Character">
+        
+        <div class="header"><div class="level-badge" id="levelDisplay">Level 1</div></div>
+        
+        <div class="card" id="gameCard">
+            <p style="font-size: 20px; color: #888; margin:0;">Find this letter:</p>
+            
+            <!-- QUESTION ELEMENT (Text Replacement Animation) -->
+            <div class="big-letter" id="questionLetter">A</div>
+            
+            <div class="options-grid" id="optionsBox"></div>
+        </div>
+    </div>
+
+    <!-- 4. BOTTOM AD -->
+    <div class="ad-bottom">
+        <script type="text/javascript">
+            atOptions = { 'key' : '66159e73d9894e59c14c0570abaee84e', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+            document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.highperformanceformat.com/66159e73d9894e59c14c0570abaee84e/invoke.js"></scr' + 'ipt>');
+        </script>
+    </div>
+
+    <!-- WRONG ANSWER MODAL -->
+    <div class="modal-overlay" id="wrongModal">
+        <div class="modal-box">
+            <div style="font-size: 24px; color: #F44336; margin-bottom:5px;">Oh No! Wrong 😢</div>
+            <div class="ad-box-rect">
+                <script type="text/javascript">
+                    atOptions = { 'key' : 'd30662a773f82e053b64b8591ab5444c', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+                    document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.highperformanceformat.com/d30662a773f82e053b64b8591ab5444c/invoke.js"></scr' + 'ipt>');
+                </script>
+            </div>
+            <button class="btn-modal" style="background: #F44336;" onclick="resetGame()">Restart Game ↺</button>
+        </div>
+    </div>
+
+    <!-- FINISH MODAL -->
+    <div class="modal-overlay" id="finishModal">
+        <div class="modal-box">
+            <div style="font-size: 60px;">🏆</div>
+            <div style="font-size: 30px; color: #FFC107;">You Won!</div>
+            <button class="btn-modal" style="background: #2196F3;" onclick="resetGame()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+        let currentIndex = 0;
+        let currentAudio = null;
+
+        // --- 🔊 TALKING SYSTEM ---
+        function playLetterSound(letter) {
+            const mascot = document.getElementById('mascotImage');
+            if(mascot) mascot.src = "talkingof.gif";
+
+            try {
+                if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+                
+                let fileName = letter + ".mp3"; 
+                currentAudio = new Audio(fileName);
+                
+                currentAudio.onended = function() {
+                    if(mascot) mascot.src = "talkingof.PNG";
+                };
+
+                currentAudio.play().catch(e => {
+                    if(mascot) mascot.src = "talkingof.PNG";
+                });
+
+            } catch (error) {
+                if(mascot) mascot.src = "talkingof.PNG";
+            }
+        }
+
+        // --- GAME LOGIC ---
+
+        function startGame() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('gameWrapper').style.display = 'flex';
+            
+            const savedIndex = localStorage.getItem('littleMasterLevel');
+            if (savedIndex) currentIndex = parseInt(savedIndex);
+
+            loadLevel();
+        }
+
+        function loadLevel() {
+            if (currentIndex >= alphabet.length) {
+                document.getElementById('finishModal').style.display = 'flex';
+                if (typeof confetti === 'function') confetti();
+                return;
+            }
+
+            // Fade In
+            document.getElementById('gameWrapper').style.opacity = '1';
+
+            const correct = alphabet[currentIndex];
+            document.getElementById('levelDisplay').innerText = "Level " + (currentIndex + 1);
+            
+            const qEl = document.getElementById('questionLetter');
+            
+            // RESET STYLE
+            qEl.classList.remove('success-message');
+            qEl.innerText = correct;
+            qEl.style.transform = "scale(1)";
+            qEl.style.color = ['#8E24AA', '#E91E63', '#4CAF50', '#FF9800', '#2196F3'][currentIndex % 5];
+
+            // Auto Play Sound
+            setTimeout(() => { playLetterSound(correct); }, 500);
+
+            let options = [correct];
+            while(options.length < 4) {
+                let r = alphabet[Math.floor(Math.random() * alphabet.length)];
+                if(!options.includes(r)) options.push(r);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const box = document.getElementById('optionsBox');
+            box.innerHTML = "";
+            const colorClasses = ['btn-c1', 'btn-c2', 'btn-c3', 'btn-c4'];
+
+            options.forEach((letter, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn ' + colorClasses[index % 4];
+                btn.innerText = letter;
+                
+                btn.onclick = function() {
+                    if(letter === correct) {
+                        btn.classList.add('btn-correct');
+                        
+                        if (typeof confetti === 'function') confetti();
+                        
+                        // --- 🔥 MAGIC: TEXT REPLACEMENT 🔥 ---
+                        
+                        // 1. Shrink Letter
+                        qEl.style.transform = "scale(0)";
+
+                        // 2. Change Text after 0.2s
+                        setTimeout(() => {
+                            const messages = ["Awesome!", "Super!", "Great!", "Genius!"];
+                            qEl.innerText = messages[Math.floor(Math.random() * messages.length)];
+                            qEl.classList.add('success-message');
+                            qEl.style.transform = "scale(1)"; // Pop Text up
+                            
+                            // Mascot Jump
+                            const mascot = document.getElementById('mascotImage');
+                            mascot.classList.add('mascot-jump');
+                            setTimeout(() => mascot.classList.remove('mascot-jump'), 600);
+
+                        }, 200);
+
+                        // 3. Hide Text & Next Level after 1.5s
+                        setTimeout(() => {
+                            qEl.style.transform = "scale(0)";
+                            setTimeout(() => nextLevel(), 200);
+                        }, 1500);
+                        
+                    } else {
+                        btn.classList.add('btn-wrong');
+                        setTimeout(() => {
+                            document.getElementById('wrongModal').style.display = 'flex';
+                        }, 500);
+                    }
+                };
+                box.appendChild(btn);
+            });
+
+            qEl.onclick = function() { playLetterSound(correct); };
+        }
+
+        function nextLevel() {
+            currentIndex++;
+            localStorage.setItem('littleMasterLevel', currentIndex);
+            loadLevel();
+        }
+
+        function resetGame() {
+            currentIndex = 0;
+            localStorage.setItem('littleMasterLevel', 0);
+            location.reload(); 
+        }
+    </script>
+</body>
+</html>
