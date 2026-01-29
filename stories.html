@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Little Master: Stories</title>
+    
+    <!-- Kids Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Bubblegum Sans', cursive;
+            /* Wahi Purple Gradient jo aapne bheja tha */
+            background: linear-gradient(180deg, #F3E5F5 0%, #E1BEE7 100%);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            color: #333;
+        }
+
+        /* --- HEADER --- */
+        .header {
+            width: 100%;
+            padding: 15px 20px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* Home Button Style */
+        .home-btn {
+            background: #F3E5F5;
+            color: #8E24AA;
+            text-decoration: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            border: 2px solid #8E24AA;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+            transition: transform 0.1s;
+        }
+
+        .home-btn:active { transform: scale(0.9); }
+
+        .title {
+            font-size: 30px;
+            color: #8E24AA;
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+            margin-right: 45px; /* Balance the Home button */
+            text-shadow: 1px 1px 0 #fff;
+        }
+
+        /* --- STORY LIST --- */
+        .stories-container {
+            flex: 1;
+            width: 100%;
+            overflow-y: auto;
+            padding: 20px 20px 80px 20px; /* Bottom padding for Ad */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .story-card {
+            background: white;
+            width: 100%;
+            max-width: 380px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.1s;
+            border-bottom: 4px solid #CE93D8; /* Purple border */
+            position: relative;
+        }
+
+        .story-card:active { transform: scale(0.98); }
+
+        .story-icon {
+            font-size: 40px;
+            width: 65px;
+            height: 65px;
+            background: #F3E5F5;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #E1BEE7;
+        }
+
+        .story-info {
+            margin-left: 15px;
+            flex: 1;
+        }
+
+        .story-title {
+            font-size: 22px;
+            color: #4A148C;
+            margin: 0 0 5px 0;
+            line-height: 1.1;
+        }
+
+        /* Language Tag */
+        .lang-tag {
+            font-size: 14px;
+            padding: 2px 8px;
+            border-radius: 8px;
+            background: #E0F2F1;
+            color: #00695C;
+            display: inline-block;
+            font-family: sans-serif;
+            font-weight: bold;
+        }
+
+        .read-btn {
+            color: #AB47BC;
+            font-size: 20px;
+            margin-left: 10px;
+        }
+
+        /* --- VIEWER (Pop up) --- */
+        #storyViewer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #FFFDE7; /* Reading mode paper color */
+            z-index: 5000;
+            display: none;
+            flex-direction: column;
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes slideUp { from {transform: translateY(100%);} to {transform: translateY(0);} }
+
+        .viewer-header {
+            padding: 15px;
+            background: #8E24AA;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .close-btn {
+            background: white;
+            color: #8E24AA;
+            border: none;
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #viewerContent {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px;
+            padding-bottom: 100px;
+            font-size: 22px;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        #viewerContent p { margin-bottom: 20px; }
+
+        /* --- BOTTOM AD --- */
+        .ad-bottom {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 50px;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-top: 1px solid #ddd;
+            z-index: 9000;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. POPUNDER ADS (Existing) -->
+    <script src="https://pl21772533.effectivegatecpm.com/8c/b6/66/8cb6663167876148ce98818f0eabaad8.js"></script>
+
+    <!-- HEADER -->
+    <div class="header">
+        <!-- HOME BUTTON -->
+        <a href="index.html" class="home-btn">🏠</a>
+        <h2 class="title">Story Time 📖</h2>
+        <div style="width: 25px;"></div> <!-- Spacer for balance -->
+    </div>
+
+    <!-- LIST OF STORIES -->
+    <div class="stories-container" id="storiesList">
+        <!-- Stories yahan JavaScript se aayengi -->
+    </div>
+
+    <!-- 2. BOTTOM AD (320x50 Sticky) -->
+    <div class="ad-bottom">
+        <script type="text/javascript">
+            atOptions = { 'key' : '66159e73d9894e59c14c0570abaee84e', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+            document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.highperformanceformat.com/66159e73d9894e59c14c0570abaee84e/invoke.js"></scr' + 'ipt>');
+        </script>
+    </div>
+
+    <!-- VIEWER (Pop up) -->
+    <div id="storyViewer">
+        <div class="viewer-header">
+            <span id="viewerTitle" style="font-size: 20px; font-weight: bold;">Story</span>
+            <button class="close-btn" onclick="closeStory()">Close ✖</button>
+        </div>
+        <div id="viewerContent"></div>
+        
+        <!-- Ad inside Reader -->
+        <div class="ad-bottom">
+            <script type="text/javascript">
+                atOptions = { 'key' : '66159e73d9894e59c14c0570abaee84e', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.highperformanceformat.com/66159e73d9894e59c14c0570abaee84e/invoke.js"></scr' + 'ipt>');
+            </script>
+        </div>
+    </div>
+
+    <script>
+        // --- UNLIMITED REAL STORIES GENERATOR ---
+        const realStoriesGenerator = {
+            // Story elements
+            characters: {
+                animals: ['Lion', 'Elephant', 'Rabbit', 'Turtle', 'Fox', 'Monkey', 'Crow', 'Dog', 'Cat', 'Mouse', 'Bear', 'Deer', 'Sparrow', 'Peacock', 'Fish', 'Frog', 'Bee', 'Ant', 'Butterfly', 'Owl', 'Goat', 'Horse', 'Camel', 'Donkey', 'Squirrel', 'Hedgehog', 'Penguin', 'Giraffe', 'Kangaroo', 'Koala'],
+                birds: ['Parrot', 'Eagle', 'Swan', 'Pigeon', 'Kingfisher', 'Woodpecker', 'Peacock', 'Ostrich', 'Hummingbird', 'Cuckoo', 'Robin', 'Dove', 'Owl'],
+                people: ['Raju', 'Mohan', 'Sita', 'Gopal', 'Maya', 'Karan', 'Priya', 'Amit', 'Neha', 'Ravi', 'Anjali', 'Vikram', 'Arjun', 'Meera', 'Rohan', 'Kavita', 'Sanjay', 'Pooja', 'Deepak', 'Sunita']
+            },
+            
+            places: ['forest', 'village', 'river bank', 'mountain', 'garden', 'farm', 'city park', 'lake', 'desert', 'jungle', 'meadow', 'cave', 'valley', 'island', 'beach', 'hills', 'field', 'pond', 'waterfall', 'tree house'],
+            
+            problems: [
+                'was very thirsty', 'was lost in the jungle', 'wanted to make friends', 
+                'had no food', 'was being bullied', 'wanted to learn something new',
+                'was afraid of the dark', 'wanted to help others', 'was feeling lonely',
+                'wanted to prove itself', 'was trapped in a net', 'was hungry',
+                'wanted to cross the river', 'was looking for home', 'wanted to fly high',
+                'could not find its mother', 'had broken its leg', 'was too small to reach fruits',
+                'was sad because no one played with it', 'was jealous of others',
+                'wanted to become king', 'was tired of being laughed at', 'was too slow',
+                'was too fast and made mistakes', 'was always angry', 'was very lazy',
+                'never listened to elders', 'always fought with friends'
+            ],
+            
+            solutions: [
+                'found water by digging', 'made new friends', 'shared food with others',
+                'learned a new skill', 'faced its fears', 'helped someone in need',
+                'solved the problem with wisdom', 'worked hard day and night',
+                'asked for help politely', 'used its special talent', 'showed kindness',
+                'told the truth', 'apologized for mistake', 'forgave others',
+                'built a bridge with friends', 'sang a beautiful song', 'danced happily',
+                'organized a competition', 'taught others what it knew', 'protected the weak',
+                'stood up against wrong', 'planted trees for everyone', 'cleaned the forest',
+                'built a school for animals', 'saved animals from fire', 'found a hidden treasure'
+            ],
+            
+            morals: [
+                'Kindness is always rewarded',
+                'Honesty is the best policy',
+                'Unity is strength',
+                'Hard work never goes waste',
+                'Think before you act',
+                'Small help is also help',
+                'Never give up easily',
+                'Sharing is caring',
+                'Patience brings success',
+                'Greed is bad',
+                'Friendship is precious',
+                'Courage overcomes fear',
+                'Love conquers all',
+                'Forgiveness is divine',
+                'Respect your elders',
+                'Education is important',
+                'Cleanliness is next to godliness',
+                'Health is wealth',
+                'Time is precious',
+                'Truth always wins'
+            ],
+            
+            hindiMorals: [
+                'मेहनत का फल मीठा होता है',
+                'ईमानदारी सबसे अच्छी नीति है',
+                'एकता में बल है',
+                'दया का फल अच्छा होता है',
+                'सब्र का फल मीठा होता है',
+                'लालच बुरी बला है',
+                'मित्रता अनमोल होती है',
+                'सच्चाई की हमेशा जीत होती है',
+                'अच्छे काम का अच्छा फल मिलता है',
+                'विनम्रता सबसे बड़ा गुण है',
+                'शिक्षा सबसे महत्वपूर्ण है',
+                'स्वास्थ्य ही धन है',
+                'समय का सदुपयोग करो',
+                'बड़ों का आदर करो',
+                'झूठ कभी न बोलो',
+                'दूसरों की मदद करो',
+                'प्रकृति का सम्मान करो',
+                'ज्ञान सबसे बड़ी शक्ति है',
+                'क्षमा महान गुण है',
+                'प्रेम सब कुछ जीत लेता है'
+            ],
+            
+            // Templates for different languages
+            templates: {
+                english: [
+                    "Once upon a time, there was a {animal} who {problem}. One day, it {solution}. From that day, the {animal} was very happy. Moral: {moral}",
+                    "In a beautiful {place}, lived a {animal}. The {animal} {problem}. With the help of friends, it {solution}. Moral: {moral}",
+                    "Long ago, a {animal} and {animal2} were best friends. One day, they {problem}. Together they {solution}. Moral: {moral}",
+                    "There was a clever {animal} in the jungle. It {problem}. Using its wisdom, it {solution}. Moral: {moral}",
+                    "A kind {animal} always helped others. One day, it {problem}. All the animals {solution}. Moral: {moral}",
+                    "In a magical {place}, a little {animal} {problem}. It prayed to God and {solution}. Moral: {moral}",
+                    "The {animal} was known for its speed but {problem}. It learned to {solution}. Moral: {moral}"
+                ],
+                
+                hindi: [
+                    "एक बार एक {animalHindi} था जो {problemHindi}. एक दिन उसने {solutionHindi}. उस दिन के बाद {animalHindi} बहुत खुश रहने लगा। सीख: {moralHindi}",
+                    "एक सुंदर {placeHindi} में एक {animalHindi} रहता था। {animalHindi} {problemHindi}. दोस्तों की मदद से उसने {solutionHindi}. सीख: {moralHindi}",
+                    "बहुत समय पहले एक {animalHindi} और {animal2Hindi} अच्छे दोस्त थे। एक दिन उन्हें {problemHindi}. मिलकर उन्होंने {solutionHindi}. सीख: {moralHindi}",
+                    "जंगल में एक चतुर {animalHindi} रहता था। वह {problemHindi}. अपनी बुद्धि से उसने {solutionHindi}. सीख: {moralHindi}",
+                    "एक दयालु {animalHindi} हमेशा दूसरों की मदद करता था। एक दिन उसे {problemHindi}. सभी जानवरों ने मिलकर {solutionHindi}. सीख: {moralHindi}",
+                    "एक जादुई {placeHindi} में एक छोटा {animalHindi} {problemHindi}. उसने भगवान से प्रार्थना की और {solutionHindi}. सीख: {moralHindi}",
+                    "{animalHindi} अपनी तेजी के लिए मशहूर था लेकिन {problemHindi}. उसने {solutionHindi} सीख लिया। सीख: {moralHindi}"
+                ],
+                
+                hinglish: [
+                    "Ek samay ki baat hai, ek {animal} tha jo {problemHinglish}. Ek din usne {solutionHinglish}. Us din ke baad {animal} bahut khush raha. Moral: {moralHinglish}",
+                    "Ek sundar {place} mein ek {animal} rehta tha. {animal} {problemHinglish}. Doston ki madad se usne {solutionHinglish}. Moral: {moralHinglish}",
+                    "Bahut pehle ek {animal} aur {animal2} acche dost the. Ek din unhe {problemHinglish}. Milkar unhon ne {solutionHinglish}. Moral: {moralHinglish}",
+                    "Jungle mein ek chalak {animal} rehta tha. Wo {problemHinglish}. Apni buddhi se usne {solutionHinglish}. Moral: {moralHinglish}",
+                    "Ek dayalu {animal} hamesha dusron ki madad karta tha. Ek din use {problemHinglish}. Sab janwaron ne milkar {solutionHinglish}. Moral: {moralHinglish}",
+                    "Ek magical {place} mein ek chota {animal} {problemHinglish}. Usne Bhagwan se prayer ki aur {solutionHinglish}. Moral: {moralHinglish}",
+                    "{animal} apni tezi ke liye mashhur tha lekin {problemHinglish}. Usne {solutionHinglish} seekh liya. Moral: {moralHinglish}"
+                ]
+            },
+            
+            hindiTranslations: {
+                animals: {
+                    'Lion': 'शेर', 'Elephant': 'हाथी', 'Rabbit': 'खरगोश', 'Turtle': 'कछुआ',
+                    'Fox': 'लोमड़ी', 'Monkey': 'बंदर', 'Crow': 'कौआ', 'Dog': 'कुत्ता',
+                    'Cat': 'बिल्ली', 'Mouse': 'चूहा', 'Bear': 'भालू', 'Deer': 'हिरन',
+                    'Sparrow': 'गौरैया', 'Peacock': 'मोर', 'Fish': 'मछली', 'Frog': 'मेंढक',
+                    'Bee': 'मधुमक्खी', 'Ant': 'चींटी', 'Butterfly': 'तितली', 'Owl': 'उल्लू',
+                    'Goat': 'बकरी', 'Horse': 'घोड़ा', 'Camel': 'ऊंट', 'Donkey': 'गधा',
+                    'Squirrel': 'गिलहरी', 'Hedgehog': 'साही', 'Penguin': 'पेंगुइन',
+                    'Giraffe': 'जिराफ', 'Kangaroo': 'कंगारू', 'Koala': 'कोआला'
+                },
+                problems: {
+                    'was very thirsty': 'बहुत प्यासा था',
+                    'was lost in the jungle': 'जंगल में खो गया था',
+                    'wanted to make friends': 'दोस्त बनाना चाहता था',
+                    'had no food': 'के पास खाना नहीं था',
+                    'was being bullied': 'को तंग किया जा रहा था',
+                    'wanted to learn something new': 'कुछ नया सीखना चाहता था',
+                    'was afraid of the dark': 'अंधेरे से डरता था',
+                    'wanted to help others': 'दूसरों की मदद करना चाहता था',
+                    'was feeling lonely': 'अकेला महसूस कर रहा था',
+                    'wanted to prove itself': 'अपने आप को साबित करना चाहता था',
+                    'was trapped in a net': 'जाल में फंस गया था',
+                    'was hungry': 'भूखा था',
+                    'wanted to cross the river': 'नदी पार करना चाहता था',
+                    'was looking for home': 'घर ढूंढ रहा था',
+                    'wanted to fly high': 'ऊँचा उड़ना चाहता था'
+                },
+                solutions: {
+                    'found water by digging': 'खोदकर पानी ढूंढ लिया',
+                    'made new friends': 'नए दोस्त बना लिए',
+                    'shared food with others': 'दूसरों के साथ खाना बांटा',
+                    'learned a new skill': 'एक नया हुनर सीख लिया',
+                    'faced its fears': 'अपने डर का सामना किया',
+                    'helped someone in need': 'जरूरतमंद की मदद की',
+                    'solved the problem with wisdom': 'बुद्धि से समस्या हल की',
+                    'worked hard day and night': 'दिन-रात मेहनत की',
+                    'asked for help politely': 'विनम्रता से मदद मांगी',
+                    'used its special talent': 'अपनी खास प्रतिभा का इस्तेमाल किया',
+                    'showed kindness': 'दया दिखाई',
+                    'told the truth': 'सच बोला',
+                    'apologized for mistake': 'गलती के लिए माफी मांगी',
+                    'forgave others': 'दूसरों को माफ कर दिया'
+                }
+            },
+            
+            // Generate a random story
+            generateStory(language, storyNumber) {
+                const animal = this.getRandom(this.characters.animals);
+                const animal2 = this.getRandom(this.characters.animals.filter(a => a !== animal));
+                const place = this.getRandom(this.places);
+                const problem = this.getRandom(this.problems);
+                const solution = this.getRandom(this.solutions);
+                const moral = this.getRandom(this.morals);
+                
+                const animalHindi = this.hindiTranslations.animals[animal] || animal;
+                const animal2Hindi = this.hindiTranslations.animals[animal2] || animal2;
+                const problemHindi = this.hindiTranslations.problems[problem] || problem;
+                const solutionHindi = this.hindiTranslations.solutions[solution] || solution;
+                const moralHindi = this.getRandom(this.hindiMorals);
+                const placeHindi = place;
+                
+                let storyContent = '';
+                let storyTitle = '';
+                const icon = this.getRandom(['🐦', '🐕', '🦁', '🐜', '🐑', '🥚', '🦊', '🐱', '🐊', '🪓', '🤝', '🐭', '🐍', '🐢', '🐘', '🐻', '🦌', '🦚', '🐟', '🐸', '🐿️', '🦔', '🐧', '🦒', '🦘', '🐨']);
+                
+                if (language === 'English') {
+                    const template = this.getRandom(this.templates.english);
+                    storyContent = template
+                        .replace(/{animal}/g, animal)
+                        .replace(/{animal2}/g, animal2)
+                        .replace(/{place}/g, place)
+                        .replace(/{problem}/g, problem)
+                        .replace(/{solution}/g, solution)
+                        .replace(/{moral}/g, moral);
+                    storyTitle = `The ${animal}'s Adventure`;
+                }
+                else if (language === 'Hindi') {
+                    const template = this.getRandom(this.templates.hindi);
+                    storyContent = template
+                        .replace(/{animalHindi}/g, animalHindi)
+                        .replace(/{animal2Hindi}/g, animal2Hindi)
+                        .replace(/{placeHindi}/g, placeHindi)
+                        .replace(/{problemHindi}/g, problemHindi)
+                        .replace(/{solutionHindi}/g, solutionHindi)
+                        .replace(/{moralHindi}/g, moralHindi);
+                    storyTitle = `${animalHindi} की कहानी`;
+                }
+                else if (language === 'Hinglish') {
+                    const problemHinglish = problem.replace('was ', '');
+                    const solutionHinglish = solution;
+                    const moralHinglish = moral;
+                    
+                    const template = this.getRandom(this.templates.hinglish);
+                    storyContent = template
+                        .replace(/{animal}/g, animal)
+                        .replace(/{animal2}/g, animal2)
+                        .replace(/{place}/g, place)
+                        .replace(/{problemHinglish}/g, problemHinglish)
+                        .replace(/{solutionHinglish}/g, solutionHinglish)
+                        .replace(/{moralHinglish}/g, moralHinglish);
+                    storyTitle = `${animal} Ki Kahani`;
+                }
+                
+                // Wrap in paragraph tags
+                const paragraphs = storyContent.split('. ').filter(p => p.length > 0);
+                let htmlContent = '';
+                paragraphs.forEach(p => {
+                    if (p.includes('Moral:') || p.includes('सीख:')) {
+                        htmlContent += `<p style="color: #8E24AA; font-weight: bold;">${p}</p>`;
+                    } else {
+                        htmlContent += `<p>${p}.</p>`;
+                    }
+                });
+                
+                return {
+                    t: `${storyTitle} #${storyNumber}`,
+                    l: language,
+                    i: icon,
+                    c: htmlContent
+                };
+            },
+            
+            getRandom(array) {
+                return array[Math.floor(Math.random() * array.length)];
+            }
+        };
+
+        // --- MIXED LANGUAGE STORIES (Initial Real Content) ---
+        const realStories = [
+            // Original 9 stories
+            { t: "The Thirsty Crow", l: "English", i: "🐦", c: "<p>A crow was very thirsty. He found a pot with very little water. He put stones in it. Water came up. He drank and flew away.</p><p style='color: #8E24AA; font-weight: bold;'>Moral: Where there is a will, there is a way.</p>" },
+            { t: "The Greedy Dog", l: "English", i: "🐕", c: "<p>A dog had a bone. He saw his reflection in the water. He thought it was another dog with a bone. He barked to take it. His bone fell into the water.</p><p style='color: #8E24AA; font-weight: bold;'>Moral: Don't be greedy.</p>" },
+            { t: "Lion and Mouse", l: "English", i: "🦁", c: "<p>A lion caught a mouse but let him go. Later, the lion got trapped in a net. The mouse cut the net and saved the lion.</p><p style='color: #8E24AA; font-weight: bold;'>Moral: Even small friends can be great helpers.</p>" },
+            { t: "चालाक लोमड़ी (Clever Fox)", l: "Hindi", i: "🦊", c: "<p>एक लोमड़ी को अंगूर चाहिए थे। अंगूर बहुत ऊँचे थे। वह कूदती रही पर अंगूर नहीं मिले। जाते-जाते बोली - 'अंगूर खट्टे हैं'</p><p style='color: #8E24AA; font-weight: bold;'>सीख: जो नहीं मिलता उसे बुरा कहना आसान है।</p>" },
+            { t: "कछुआ और खरगोश", l: "Hindi", i: "🐢", c: "<p>दौड़ शुरू हुई। खरगोश तेज भागा और सो गया। कछुआ धीरे-धीरे चलता रहा और जीत गया।</p><p style='color: #8E24AA; font-weight: bold;'>सीख: धैर्य से जीत मिलती है।</p>" },
+            { t: "शेर और चूहा", l: "Hindi", i: "🐭", c: "<p>चूहे ने शेर की जान बचाई। उसने शिकारी का जाल अपने दांतों से काट दिया। शेर ने चूहे को धन्यवाद कहा।</p><p style='color: #8E24AA; font-weight: bold;'>सीख: छोटे-बड़े का भेद मत करो।</p>" },
+            { t: "Pyasa Kauwa", l: "Hinglish", i: "🦅", c: "<p>Ek kauwa bahut pyasa tha. Use ek ghada mila par paani kam tha. Usne usme pathar daale. Paani upar aa gaya. Kauwe ne paani piya aur ud gaya.</p><p style='color: #8E24AA; font-weight: bold;'>Moral: Himmat se har mushkil aasan ho jaati hai.</p>" },
+            { t: "Lalchi Kutta", l: "Hinglish", i: "🐶", c: "<p>Ek kutte ke paas haddi thi. Usne paani mein apni parchhai dekhi. Use laga dusra kutta hai. Wo bhonka aur haddi gir gayi.</p><p style='color: #8E24AA; font-weight: bold;'>Moral: Lalach buri bala hai.</p>" },
+            { t: "Imandaar Lakadhara", l: "Hinglish", i: "🪓", c: "<p>Lakadhara ki kulhadi nadi mein gir gayi. Jalpari ne use sone ki kulhadi di, usne mana kar diya. Phir lohe ki li. Jalpari khush ho gayi aur teeno kulhadiyan usko di.</p><p style='color: #8E24AA; font-weight: bold;'>Moral: Imandari sabse achi policy hai.</p>" },
+            
+            // Additional real stories
+            { t: "The Ant and the Grasshopper", l: "English", i: "🐜", c: "<p>An ant worked hard all summer collecting food. A grasshopper sang and played. When winter came, the ant had food but the grasshopper was hungry.</p><p style='color: #8E24AA; font-weight: bold;'>Moral: Work today to enjoy tomorrow.</p>" },
+            { t: "The Golden Eggs", l: "English", i: "🥚", c: "<p>A farmer had a goose that laid one golden egg daily. He became greedy and cut the goose open to get all eggs at once. He found nothing and lost the goose.</p><p style='color: #8E24AA; font-weight: bold;'>Moral: Greed destroys what you have.</p>" },
+            { t: "लालची बिल्ली", l: "Hindi", i: "🐱", c: "<p>एक बिल्ली ने घंटी बांधकर चूहों को डराना चाहा। एक बूढ़े चूहे ने सलाह दी - 'पहले बताओ घंटी कौन बांधेगा?' कोई नहीं बोला।</p><p style='color: #8E24AA; font-weight: bold;'>सीख: सिर्फ सोचने से काम नहीं चलता।</p>" },
+            { t: "Chalak Lomdi", l: "Hinglish", i: "🦊", c: "<p>Lomdi ko angoor chahiye the. Angoor bahut upar the. Wo koodi par nahi pahunchi. Jaate jaate boli - 'Angoor khatte hain!'</p><p style='color: #8E24AA; font-weight: bold;'>Moral: Jo nahi milta use bura kehna aasaan hai.</p>" }
+        ];
+
+        // --- GENERATE UNLIMITED REAL STORIES ---
+        let allStories = [...realStories];
+
+        // Generate 5000+ real stories in all languages
+        const totalStories = 5000; // Change this number for more stories
+        const languages = ["English", "Hindi", "Hinglish"];
+
+        for (let i = realStories.length + 1; i <= totalStories; i++) {
+            const randomLanguage = languages[Math.floor(Math.random() * languages.length)];
+            const newStory = realStoriesGenerator.generateStory(randomLanguage, i);
+            allStories.push(newStory);
+        }
+
+        // --- RENDER FUNCTION ---
+        const listDiv = document.getElementById('storiesList');
+
+        function loadStories() {
+            listDiv.innerHTML = "";
+            
+            allStories.forEach(story => {
+                const card = document.createElement('div');
+                card.className = 'story-card';
+                
+                // Color code badges
+                let badgeColor = "#E0F2F1"; // Default Teal
+                let textColor = "#00695C";
+                if(story.l === "Hindi") { badgeColor = "#FFF3E0"; textColor = "#E65100"; }
+                if(story.l === "Hinglish") { badgeColor = "#F3E5F5"; textColor = "#8E24AA"; }
+
+                card.innerHTML = `
+                    <div class="story-icon">${story.i}</div>
+                    <div class="story-info">
+                        <h3 class="story-title">${story.t}</h3>
+                        <span class="lang-tag" style="background:${badgeColor}; color:${textColor};">${story.l}</span>
+                    </div>
+                    <div class="read-btn">➔</div>
+                `;
+                card.onclick = () => openStory(story);
+                listDiv.appendChild(card);
+            });
+        }
+
+        function openStory(story) {
+            document.getElementById('viewerTitle').innerText = story.t;
+            document.getElementById('viewerContent').innerHTML = story.c;
+            document.getElementById('storyViewer').style.display = 'flex';
+        }
+
+        function closeStory() {
+            document.getElementById('storyViewer').style.display = 'none';
+        }
+
+        // Initialize
+        loadStories();
+
+    </script>
+</body>
+</html>

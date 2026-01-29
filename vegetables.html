@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Little Master: Fruits & Veggies</title>
+    
+    <!-- English Font: Fredoka -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Confetti Script -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(180deg, #E8F5E9 0%, #C8E6C9 100%);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            color: #333;
+        }
+
+        /* --- UI ELEMENTS --- */
+        .home-btn {
+            position: absolute; top: 15px; left: 15px;
+            background: white; border: 3px solid #fff; border-radius: 50%;
+            width: 50px; height: 50px; font-size: 28px;
+            cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 200; display: flex; align-items: center;
+            justify-content: center; text-decoration: none;
+        }
+
+        #startScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, #E8F5E9 0%, #C8E6C9 100%);
+            z-index: 10000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+        }
+
+        .play-btn {
+            background: #2E7D32; color: white; font-size: 28px;
+            padding: 15px 50px; border: none; border-radius: 50px;
+            font-family: 'Fredoka', sans-serif; font-weight: bold;
+            box-shadow: 0 6px 0 #1B5E20; cursor: pointer;
+            animation: pulse 1.5s infinite; margin-top: 10px;
+        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        .game-wrapper {
+            flex: 1; display: none; flex-direction: column;
+            align-items: center; justify-content: center;
+            width: 100%; padding-bottom: 60px;
+        }
+
+        .mascot-display {
+            height: 90px; margin-bottom: 5px;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
+        }
+
+        .card {
+            background: white; padding: 15px; border-radius: 30px;
+            width: 90%; max-width: 360px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 5px solid #fff;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+
+        .question-area {
+            background: #F1F8E9; border-radius: 20px;
+            padding: 10px 5px; margin-bottom: 15px;
+            border: 2px dashed #AED581;
+        }
+
+        .spelling-text {
+            font-size: 40px; font-weight: 700; color: #2E7D32;
+            letter-spacing: 1px; line-height: 1.1; margin: 0;
+            text-shadow: 2px 2px 0 #DCEDC8; text-transform: uppercase;
+        }
+
+        .hindi-text {
+            font-size: 26px; color: #558B2F; margin-top: 2px;
+            font-weight: 500; font-family: sans-serif;
+        }
+
+        .success-text {
+            font-size: 45px; color: #4CAF50; font-weight: bold;
+            animation: popIn 0.3s;
+        }
+        @keyframes popIn { from {transform:scale(0);} to {transform:scale(1);} }
+
+        .options-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+        }
+
+        .option-btn {
+            background: white; border: 3px solid #E0E0E0;
+            border-radius: 20px; height: 90px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 5px 0 #E0E0E0;
+            transition: transform 0.1s;
+        }
+        .option-btn:active { transform: translateY(5px); box-shadow: none; }
+
+        .emoji-mode { font-size: 50px; }
+        .img-mode { max-width: 80%; max-height: 80%; object-fit: contain; }
+
+        .ad-box-rect {
+            width: 300px; height: 250px; background: #fff;
+            display: flex; justify-content: center; align-items: center;
+            margin: 20px 0; border: 2px dashed #ccc;
+        }
+        .ad-bottom {
+            position: fixed; bottom: 0; width: 100%; height: 50px;
+            background: #fff; border-top: 1px solid #ccc;
+            display: flex; justify-content: center; align-items: center; z-index: 9000;
+        }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); display: none;
+            justify-content: center; align-items: center; z-index: 11000;
+        }
+        .modal-box {
+            background: white; padding: 25px; border-radius: 25px;
+            text-align: center; width: 90%; max-width: 320px;
+        }
+    </style>
+</head>
+<body>
+
+    <script src="https://pl21772533.effectivegatecpm.com/8c/b6/66/8cb6663167876148ce98818f0eabaad8.js"></script>
+
+    <!-- START SCREEN -->
+    <div id="startScreen">
+        <a href="index.html" class="home-btn">🏠</a>
+        <h1 style="color: #1B5E20; font-size: 35px; margin-bottom: 5px;">Read & Find</h1>
+        <p style="color: #333; margin-top: 0;">Fruits & Veggies 🍎🥦</p>
+        
+        <div class="ad-box-rect">
+            <script type="text/javascript">
+                atOptions = { 'key' : 'd30662a773f82e053b64b8591ab5444c', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+                document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.highperformanceformat.com/d30662a773f82e053b64b8591ab5444c/invoke.js"></scr' + 'ipt>');
+            </script>
+        </div>
+        
+        <button class="play-btn" onclick="startGame()">▶ Play</button>
+    </div>
+
+    <!-- GAME WRAPPER -->
+    <div class="game-wrapper" id="gameWrapper">
+        <a href="index.html" class="home-btn">🏠</a>
+        <img src="talkingof.PNG" id="mascotImage" class="mascot-display" alt="Mascot">
+        
+        <div class="card">
+            <div style="text-align: left; font-size: 14px; color: #888; margin-bottom: 5px;">Read this word:</div>
+            
+            <div class="question-area" id="qArea">
+                <div class="spelling-text" id="qText">APPLE</div>
+                <div class="hindi-text" id="qHindi">सेब</div>
+            </div>
+
+            <div class="options-grid" id="optionsBox"></div>
+        </div>
+    </div>
+
+    <div class="ad-bottom">
+        <script type="text/javascript">
+            atOptions = { 'key' : '66159e73d9894e59c14c0570abaee84e', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+            document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.highperformanceformat.com/66159e73d9894e59c14c0570abaee84e/invoke.js"></scr' + 'ipt>');
+        </script>
+    </div>
+
+    <!-- MODALS -->
+    <div class="modal-overlay" id="wrongModal">
+        <div class="modal-box">
+            <div style="font-size: 60px;">😢</div>
+            <h2 style="color: #F44336;">Try Again!</h2>
+            <button class="play-btn" style="background:#F44336;" onclick="resetLevel()">Retry ↺</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="finishModal">
+        <div class="modal-box">
+            <div style="font-size: 60px;">🏆</div>
+            <h2 style="color: #4CAF50;">Awesome!</h2>
+            <p>You learned all items!</p>
+            <button class="play-btn" style="background:#2196F3;" onclick="restartFullGame()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA LIST (Mixed Fruits & Veggies) ---
+        // Note: For items with 'img: "name.png"', you MUST upload the file.
+        
+        const gameData = [
+            // Standard Emojis
+            { en: "POTATO", hi: "आलू", img: "🥔" },
+            { en: "APPLE", hi: "सेब", img: "🍎" },
+            { en: "ONION", hi: "प्याज़", img: "🧅" },
+            { en: "BANANA", hi: "केला", img: "🍌" },
+            { en: "TOMATO", hi: "टमाटर", img: "🍅" },
+            { en: "MANGO", hi: "आम", img: "🥭" },
+            { en: "BRINJAL", hi: "बैंगन", img: "🍆" },
+            { en: "ORANGE", hi: "संतरा", img: "🍊" },
+            { en: "GRAPES", hi: "अंगूर", img: "🍇" },
+            { en: "PINEAPPLE", hi: "अनानास", img: "🍍" },
+            { en: "CARROT", hi: "गाजर", img: "🥕" },
+            { en: "WATERMELON", hi: "तरबूज", img: "🍉" },
+            { en: "PUMPKIN", hi: "कद्दू", img: "🎃" },
+            { en: "MUSKMELON", hi: "खरबूजा", img: "🍈" },
+            { en: "KIWI", hi: "कीवी", img: "🥝" },
+            { en: "PEAS", hi: "मटर", img: "🫛" },
+            { en: "STRAWBERRY", hi: "स्ट्रॉबेरी", img: "🍓" },
+            { en: "GINGER", hi: "अदरक", img: "🫚" },
+            { en: "LEMON", hi: "नींबू", img: "🍋" },
+            { en: "GARLIC", hi: "लहसुन", img: "🧄" },
+            { en: "CUCUMBER", hi: "खीरा", img: "🥒" },
+            { en: "PEAR", hi: "नाशपाती", img: "🍐" },
+            { en: "PEACH", hi: "आड़ू", img: "🍑" },
+            { en: "CHERRY", hi: "चेरी", img: "🍒" },
+            { en: "CAPSICUM", hi: "शिमला मिर्च", img: "🫑" },
+            { en: "BLUEBERRY", hi: "नीलबदरी", img: "🫐" },
+            { en: "SWEET POTATO", hi: "शकरकंद", img: "🍠" },
+            { en: "COCONUT", hi: "नारियल", img: "🥥" },
+            { en: "MUSHROOM", hi: "खुम्ब", img: "🍄" },
+            { en: "AVOCADO", hi: "एवोकैडो", img: "🥑" },
+            { en: "CORN", hi: "भुट्टा", img: "🌽" },
+            { en: "BROCCOLI", hi: "ब्रोकोली", img: "🥦" },
+            { en: "OLIVE", hi: "जैतून", img: "🫒" },
+            { en: "LETTUCE", hi: "सलाद पत्ता", img: "🥬" },
+            { en: "CORIANDER", hi: "धनिया", img: "🌿" },
+            { en: "GREEN CHILLI", hi: "हरी मिर्च", img: "🌶️" },
+
+            // --- IMAGES REQUIRED (Upload these PNGs) ---
+            { en: "LADY FINGER", hi: "भिंडी", img: "ladyfinger.png" },
+            { en: "CABBAGE", hi: "पत्ता गोभी", img: "cabbage.png" },
+            { en: "PAPAYA", hi: "पपीता", img: "papaya.png" },
+            { en: "CAULIFLOWER", hi: "फूल गोभी", img: "cauliflower.png" },
+            { en: "GUAVA", hi: "अमरूद", img: "guava.png" },
+            { en: "RADISH", hi: "मूली", img: "radish.png" },
+            { en: "SPINACH", hi: "पालक", img: "spinach.png" },
+            { en: "POMEGRANATE", hi: "अनार", img: "pomegranate.png" },
+            { en: "BITTER GOURD", hi: "करेला", img: "bittergourd.png" },
+            { en: "BOTTLE GOURD", hi: "लौकी", img: "bottlegourd.png" },
+            { en: "RIDGE GOURD", hi: "तोरई", img: "ridgegourd.png" },
+            { en: "PLUM", hi: "आलू बुखारा", img: "plum.png" },
+            { en: "TURNIP", hi: "शलजम", img: "turnip.png" },
+            { en: "FIG", hi: "अंजीर", img: "fig.png" },
+            { en: "BEETROOT", hi: "चुकंदर", img: "beetroot.png" },
+            { en: "LITCHI", hi: "लीची", img: "litchi.png" },
+            { en: "DRUMSTICK", hi: "सहजन", img: "drumstick.png" },
+            { en: "DRAGON FRUIT", hi: "ड्रैगन फ्रूट", img: "dragonfruit.png" },
+            { en: "JACKFRUIT", hi: "कटहल", img: "jackfruit.png" },
+            { en: "CUSTARD APPLE", hi: "सीताफल", img: "custardapple.png" },
+            { en: "FENUGREEK", hi: "मेथी", img: "fenugreek.png" },
+            { en: "MULBERRY", hi: "शहतूत", img: "mulberry.png" },
+            { en: "DATE", hi: "खजूर", img: "date.png" },
+            { en: "RAW BANANA", hi: "कच्चा केला", img: "rawbanana.png" },
+            { en: "AMLA", hi: "आंवला", img: "amla.png" },
+            { en: "SPRING ONION", hi: "हरा प्याज़", img: "springonion.png" },
+            { en: "RAISIN", hi: "किशमिश", img: "raisin.png" },
+            { en: "ZUCCHINI", hi: "जुकीनी", img: "zucchini.png" },
+            { en: "CRANBERRY", hi: "करौंदा", img: "cranberry.png" },
+            { en: "APRICOT", hi: "खुबानी", img: "apricot.png" },
+            { en: "KALE", hi: "केल", img: "kale.png" },
+            { en: "PASSION FRUIT", hi: "कृष्णा फल", img: "passionfruit.png" }
+        ];
+
+        let currentIndex = 0;
+
+        function speakWord(text) {
+            const mascot = document.getElementById('mascotImage');
+            if(mascot) mascot.src = "talkingof.gif";
+            
+            // Try MP3 first
+            let fileName = text.toLowerCase().replace(/ /g, "") + ".mp3"; // Removes spaces for filename
+            let audio = new Audio(fileName);
+
+            audio.onended = () => { if(mascot) mascot.src = "talkingof.PNG"; };
+            
+            // Fallback to TTS
+            audio.onerror = () => {
+                const synth = window.speechSynthesis;
+                const u = new SpeechSynthesisUtterance(text);
+                u.rate = 0.8; 
+                u.onend = () => { if(mascot) mascot.src = "talkingof.PNG"; };
+                synth.speak(u);
+            };
+
+            audio.play().catch(e => {
+                const synth = window.speechSynthesis;
+                const u = new SpeechSynthesisUtterance(text);
+                u.rate = 0.8;
+                u.onend = () => { if(mascot) mascot.src = "talkingof.PNG"; };
+                synth.speak(u);
+            });
+        }
+
+        function startGame() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('gameWrapper').style.display = 'flex';
+            const saved = localStorage.getItem('learnMixLevel');
+            if(saved) currentIndex = parseInt(saved);
+            loadLevel();
+        }
+
+        function loadLevel() {
+            if(currentIndex >= gameData.length) {
+                document.getElementById('finishModal').style.display = 'flex';
+                if(typeof confetti === 'function') confetti();
+                return;
+            }
+
+            const correct = gameData[currentIndex];
+            
+            document.getElementById('qText').innerText = correct.en;
+            document.getElementById('qHindi').innerText = correct.hi;
+
+            setTimeout(() => speakWord(correct.en), 300);
+
+            let options = [correct];
+            while(options.length < 4) {
+                let r = gameData[Math.floor(Math.random() * gameData.length)];
+                if(r.en !== correct.en && !options.includes(r)) options.push(r);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const box = document.getElementById('optionsBox');
+            box.innerHTML = "";
+
+            options.forEach(item => {
+                const btn = document.createElement('div');
+                btn.className = 'option-btn';
+                
+                let contentHTML = '';
+                if(item.img.includes('.')) {
+                    contentHTML = `<img src="${item.img}" class="img-mode" alt="${item.en}">`;
+                } else {
+                    contentHTML = `<div class="emoji-mode">${item.img}</div>`;
+                }
+                btn.innerHTML = contentHTML;
+
+                btn.onclick = () => {
+                    if(item.en === correct.en) {
+                        handleSuccess(correct);
+                    } else {
+                        handleWrong(btn);
+                    }
+                };
+                box.appendChild(btn);
+            });
+        }
+
+        function handleSuccess(correct) {
+            if(typeof confetti === 'function') confetti();
+            
+            const qArea = document.getElementById('qArea');
+            // Store original content
+            const originalHTML = qArea.innerHTML;
+            qArea.innerHTML = `<div class="success-text">Correct!</div>`;
+            
+            speakWord("Good Job!");
+
+            setTimeout(() => {
+                currentIndex++;
+                localStorage.setItem('learnMixLevel', currentIndex);
+                qArea.innerHTML = `<div class="spelling-text" id="qText"></div><div class="hindi-text" id="qHindi"></div>`;
+                loadLevel();
+            }, 1500);
+        }
+
+        function handleWrong(btnElement) {
+            btnElement.style.background = "#FFCDD2";
+            btnElement.style.borderColor = "#F44336";
+            setTimeout(() => {
+                document.getElementById('wrongModal').style.display = 'flex';
+            }, 400);
+        }
+
+        function resetLevel() {
+            document.getElementById('wrongModal').style.display = 'none';
+            const btns = document.querySelectorAll('.option-btn');
+            btns.forEach(b => {
+                b.style.background = 'white';
+                b.style.borderColor = '#E0E0E0';
+            });
+            const correct = gameData[currentIndex];
+            speakWord(correct.en);
+        }
+
+        function restartFullGame() {
+            currentIndex = 0;
+            localStorage.setItem('learnMixLevel', 0);
+            location.reload();
+        }
+    </script>
+</body>
+</html>
