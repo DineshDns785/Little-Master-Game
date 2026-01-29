@@ -200,14 +200,40 @@ body { font-family: 'Bubblegum Sans', cursive; background-color: #E0F7FA; backgr
 </div> 
 
 <script> 
-// --- DIRECT START LOGIC ---
+// --- AUDIO SYSTEM (Auto + Touch) ---
+// Note: Browsers block 100% autoplay without interaction.
+// This code tries to play, and if blocked, plays on the FIRST touch/click.
+let audio = new Audio('welcome.mp3');
+let hasPlayed = false;
+
+function tryPlaySound() {
+    if (!hasPlayed) {
+        audio.play().then(() => {
+            hasPlayed = true;
+            // Remove listeners once sound starts
+            document.removeEventListener('click', tryPlaySound);
+            document.removeEventListener('touchstart', tryPlaySound);
+        }).catch(e => {
+            console.log("Autoplay blocked, waiting for user interaction.");
+        });
+    }
+}
+
+// 1. Try on Load (incase browser/webview allows it)
 window.onload = function() {
-    // 1. Play Confetti on Load
+    // Play confetti
     if(typeof confetti === "function") {
         confetti({ particleCount: 150, spread: 80, origin: { y: 0.3 } });
     }
-    // 2. Start Typewriter
+    // Start Typing
     typeEffect();
+
+    // Try Sound
+    tryPlaySound();
+    
+    // 2. Attach "Play on Touch" backup (Required for Chrome/Mobile)
+    document.addEventListener('click', tryPlaySound);
+    document.addEventListener('touchstart', tryPlaySound);
 };
 
 function openGame(pageName) { window.location.href = pageName; } 
