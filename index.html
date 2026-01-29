@@ -35,47 +35,6 @@
             padding-bottom: 80px;
         }
 
-        /* --- SPLASH SCREEN (START PAGE) --- */
-        #splashScreen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #FF9800, #FF5722);
-            z-index: 99999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            transition: opacity 0.5s ease;
-        }
-
-        .splash-title {
-            font-size: 50px; color: white; margin-bottom: 20px;
-            text-shadow: 3px 3px 0 rgba(0,0,0,0.2);
-            animation: bounceIn 1s;
-        }
-
-        .big-start-btn {
-            background: #fff; color: #FF5722; font-size: 35px;
-            padding: 15px 60px; border: none; border-radius: 50px;
-            font-family: 'Bubblegum Sans', cursive; cursor: pointer;
-            box-shadow: 0 8px 0 #E64A19, 0 20px 20px rgba(0,0,0,0.2);
-            transition: transform 0.1s;
-            animation: pulse 1.5s infinite;
-        }
-        
-        .big-start-btn:active {
-            transform: translateY(8px);
-            box-shadow: 0 0 0 #E64A19;
-        }
-
-        @keyframes bounceIn {
-            0% { transform: scale(0); } 60% { transform: scale(1.1); } 100% { transform: scale(1); }
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); }
-        }
-
         /* --- HEADER --- */
         .app-header {
             width: 100%; background: white; padding: 15px; text-align: center;
@@ -189,11 +148,8 @@
         .cloud { background: #FF9800; box-shadow: 0 5px 0 #e65100; }
         .bot { background: #673AB7; box-shadow: 0 5px 0 #311b92; }
 
-        /* REMOVED ADS CSS */
-        .middle-ad-container { display: none; }
         .footer-area { width: 100%; text-align: center; padding-bottom: 120px; margin-top: 20px; }
         .policy-link { color: #E91E63; text-decoration: none; font-size: 16px; font-weight: bold; background: white; padding: 10px 25px; border-radius: 50px; box-shadow: 0 4px 0 #F8BBD0; display: inline-block; }
-        .ad-bottom { display: none; }
 
         .share-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(5px); }
         .share-box { background: white; width: 85%; max-width: 320px; border-radius: 25px; padding: 25px; text-align: center; box-shadow: 0 20px 0 #E0E0E0; border: 4px solid #4DB6AC; }
@@ -204,17 +160,6 @@
     </style>
 </head>
 <body>
-
-    <!-- 🔥 START SCREEN OVERLAY 🔥 -->
-    <div id="splashScreen">
-        <h1 class="splash-title">Little Master 🎓</h1>
-        
-        <!-- Ad Box Removed -->
-        
-        <button class="big-start-btn" onclick="enterApp()">▶ PLAY</button>
-    </div>
-
-    <!-- 1. POPUNDER ADS REMOVED -->
 
     <!-- HEADER -->
     <div class="app-header">
@@ -352,15 +297,11 @@
         </div>
     </div>
 
-    <!-- MIDDLE AD REMOVED -->
-
     <!-- FOOTER -->
     <div class="footer-area">
         <a href="privacy.html" class="policy-link">🔒 Privacy Policy</a>
         <br><br><span style="font-size:12px; color:#555;">© Little Master App</span>
     </div>
-
-    <!-- BOTTOM AD REMOVED -->
 
     <!-- SHARE MODAL -->
     <div class="share-modal" id="sharePopup">
@@ -374,37 +315,32 @@
     </div>
 
     <script>
-        // --- 🔊 START PAGE LOGIC (100% SOUND GUARANTEE) ---
+        // --- 🚀 AUTO START LOGIC (No "Play" Button) ---
         
-        let audio = new Audio('welcome.mp3'); 
+        document.addEventListener("DOMContentLoaded", function() {
+            // 1. Start Typewriter Effect
+            typeEffect();
 
-        function enterApp() {
-            // 1. Play Sound IMMEDIATELY on click
-            audio.play().catch(e => console.log("Audio Error: " + e));
-
-            // 2. Hide Splash Screen
-            document.getElementById('splashScreen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('splashScreen').style.display = 'none';
-            }, 500);
-
-            // 3. Play Confetti on Home
+            // 2. Start Confetti
             if(typeof confetti === "function") {
                 confetti({ particleCount: 150, spread: 80, origin: { y: 0.3 } });
             }
 
-            // 4. Start Typewriter
-            typeEffect();
-        }
+            // 3. Try to Auto-Play Audio (Browsers might block this without user interaction)
+            let audio = new Audio('welcome.mp3');
+            audio.play().catch(e => {
+                console.log("Auto-play blocked by browser (User interaction needed for sound): " + e);
+            });
 
-        // Jab audio khatam ho jaye, tab GIF gayab karo
-        audio.onended = function() {
-            const welcomeBox = document.getElementById('welcomeBox');
-            if(welcomeBox) {
-                welcomeBox.style.opacity = '0';
-                setTimeout(() => { welcomeBox.style.display = 'none'; }, 1000);
-            }
-        };
+            // 4. Hide welcome gif when audio ends (if it plays)
+            audio.onended = function() {
+                const welcomeBox = document.getElementById('welcomeBox');
+                if(welcomeBox) {
+                    welcomeBox.style.opacity = '0';
+                    setTimeout(() => { welcomeBox.style.display = 'none'; }, 1000);
+                }
+            };
+        });
 
         // --- Other Functions ---
         function openGame(pageName) { window.location.href = pageName; }
