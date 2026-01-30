@@ -84,11 +84,11 @@ body { font-family: 'Bubblegum Sans', cursive; background-color: #E0F7FA; backgr
 
 <div class="app-header"> <h1 class="app-title">Little Master 🎓</h1> </div> 
 
-<div class="welcome-wrapper" id="welcomeBox" onclick="forcePlayAudio()"> 
+<div class="welcome-wrapper" id="welcomeBox" onclick="playWelcomeAudio()"> 
     <img src="Welcome.gif" id="welcomeGif" class="mascot-img" alt="Little Master"> 
     <div class="welcome-card-3d"> 
         <h2 class="welcome-main">Hello, Genius!</h2> 
-        <div class="typing-container"> <span id="typewriter">Tap to Start...</span> </div> 
+        <div class="typing-container"> <span id="typewriter">Tap here to Start...</span> </div> 
     </div> 
 </div> 
 
@@ -202,47 +202,36 @@ body { font-family: 'Bubblegum Sans', cursive; background-color: #E0F7FA; backgr
 </div> 
 
 <script> 
-// --- FINAL SOUND LOGIC ---
-let audio = new Audio('welcome.mp3');
-let isPlaying = false;
+// --- FINAL SOUND LOGIC (SAME AS MONTHS.HTML) ---
+let audio = new Audio('welcome.mp3'); 
 let welcomeBox = document.getElementById('welcomeBox');
 
-// 1. Audio khatam hone par Box Gayab
+// 1. Audio khatam hone par Welcome Box Gayab (Automatic)
 audio.onended = function() {
     welcomeBox.style.opacity = '0';
-    // 1 second baad bilkul remove kar do
     setTimeout(function() {
         welcomeBox.style.display = 'none';
     }, 1000);
 };
 
-// 2. Click karne par play karne wala function
-function forcePlayAudio() {
-    if(!isPlaying) {
-        audio.play().then(function() {
-            isPlaying = true;
-            console.log("Audio Playing!");
-            // Ek baar play ho gaya to listener hata do
-            document.removeEventListener('click', forcePlayAudio);
-            document.removeEventListener('touchstart', forcePlayAudio);
-        }).catch(function(e) {
-            console.log("Audio failed (Click again): " + e);
-        });
-    }
+// 2. Play Function
+function playWelcomeAudio() {
+    audio.play().catch(function(e) {
+        console.log("Waiting for interaction...");
+    });
 }
 
-// 3. Screen par kahin bhi click karne par sound bajega
-document.addEventListener('click', forcePlayAudio);
-document.addEventListener('touchstart', forcePlayAudio);
-
-// 4. Page load hote hi try karo (shayad browser allow kar de)
+// 3. Page load hote hi (500ms baad) sound play karo - (Exact months.html logic)
 window.onload = function() {
+    // Confetti
     if(typeof confetti === "function") {
         confetti({ particleCount: 150, spread: 80, origin: { y: 0.3 } });
     }
+    // Typewriter
     typeEffect();
-    // Try auto play
-    forcePlayAudio();
+    
+    // START AUDIO DELAY (Same as months.html)
+    setTimeout(playWelcomeAudio, 500);
 };
 
 function openGame(pageName) { window.location.href = pageName; } 
@@ -251,7 +240,7 @@ function closeShareModal() { document.getElementById('sharePopup').style.display
 
 // Typewriter
 const textElement = document.getElementById("typewriter"); 
-const texts = ["Tap to Start...", "Welcome Kid...", "Let's Play!"]; 
+const texts = ["Tap here to Start...", "Welcome Kid...", "Let's Play!"]; 
 let textIndex = 0; 
 let charIndex = 0; 
 let isDeleting = false; 
