@@ -6,6 +6,7 @@
 <title>Little Master: Home</title>
 
 <link rel="preload" href="Welcome.gif" as="image"> 
+
 <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet"> 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script> 
@@ -200,41 +201,27 @@ body { font-family: 'Bubblegum Sans', cursive; background-color: #E0F7FA; backgr
 </div> 
 
 <script> 
-// --- AUDIO SYSTEM (Auto + Touch) ---
-// Note: Browsers block 100% autoplay without interaction.
-// This code tries to play, and if blocked, plays on the FIRST touch/click.
-let audio = new Audio('welcome.mp3');
-let hasPlayed = false;
-
-function tryPlaySound() {
-    if (!hasPlayed) {
-        audio.play().then(() => {
-            hasPlayed = true;
-            // Remove listeners once sound starts
-            document.removeEventListener('click', tryPlaySound);
-            document.removeEventListener('touchstart', tryPlaySound);
-        }).catch(e => {
-            console.log("Autoplay blocked, waiting for user interaction.");
-        });
-    }
-}
-
-// 1. Try on Load (incase browser/webview allows it)
+// --- SOUND LOGIC (Like months.html) ---
 window.onload = function() {
-    // Play confetti
+    // 1. Play Confetti
     if(typeof confetti === "function") {
         confetti({ particleCount: 150, spread: 80, origin: { y: 0.3 } });
     }
-    // Start Typing
-    typeEffect();
-
-    // Try Sound
-    tryPlaySound();
     
-    // 2. Attach "Play on Touch" backup (Required for Chrome/Mobile)
-    document.addEventListener('click', tryPlaySound);
-    document.addEventListener('touchstart', tryPlaySound);
+    // 2. Start Typing Effect
+    typeEffect();
+    
+    // 3. Play Sound after 500ms (Same as months.html)
+    setTimeout(playHomeSound, 500);
 };
+
+function playHomeSound() {
+    var audio = new Audio('welcome.mp3');
+    audio.play().catch(function(e) {
+        // Safe fail silently if blocked, but it tries its best
+        console.log("Audio interaction check: " + e);
+    });
+}
 
 function openGame(pageName) { window.location.href = pageName; } 
 function openShareModal() { document.getElementById('sharePopup').style.display = 'flex'; } 
