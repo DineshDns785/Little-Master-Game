@@ -13,19 +13,85 @@
 
 <style> 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; } 
-body { font-family: 'Bubblegum Sans', cursive; background-color: #E0F7FA; background-image: radial-gradient(#B2EBF2 20%, transparent 20%), radial-gradient(#B2EBF2 20%, transparent 20%); background-position: 0 0, 10px 10px; background-size: 20px 20px; min-height: 100vh; margin: 0; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; overflow-y: auto; color: #333; padding-bottom: 80px; } 
+
+/* --- 🔥 LIVE MOVING GRADIENT BACKGROUND 🔥 --- */
+body { 
+    font-family: 'Bubblegum Sans', cursive; 
+    
+    /* Yahan maine QUANTITY badha di hai (Total 10 Colors) */
+    background: linear-gradient(-50deg, 
+        #00FA9A, /* Spring Green */
+        #0000FF, /* Blue */
+        #FF0000, /* Red */
+        #FFFF00, /* Yellow */
+        #FF7F00, /* Orange */
+        #FFD700, /* Gold */
+        #00FF00, /* Lime */
+        #00FFFF, /* Cyan */
+        #8A2BE2, /* BlueViolet */
+        #FF00FF  /* Magenta */
+    );
+    
+    background-size: 600% 600%; /* Size badhaya taaki transition smooth ho */
+    animation: gradientBG 10s ease infinite; /* Time s kar diya taaki colors aaram se badlein */
+    
+    min-height: 100vh; 
+    margin: 0; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    overflow-x: hidden; 
+    overflow-y: auto; 
+    color: #333; 
+    padding-bottom: 80px; 
+}
+
+
+/* Animation Logic */
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* --- START OVERLAY (POPUP) --- */
+#startOverlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85); z-index: 20000;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    backdrop-filter: blur(8px);
+}
+.play-btn-circle {
+    width: 100px; height: 100px;
+    background: #FF5722; color: white;
+    border-radius: 50%; border: 4px solid white;
+    font-size: 40px; cursor: pointer;
+    box-shadow: 0 0 20px #FF5722;
+    animation: pulseBtn 1.5s infinite;
+    display: flex; justify-content: center; align-items: center; padding-left: 8px; 
+}
+.play-text { color: white; font-size: 24px; margin-top: 20px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+@keyframes pulseBtn { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
 /* --- HEADER --- */ 
-.app-header { width: 100%; background: white; padding: 15px; text-align: center; border-bottom: 8px solid #FFCA28; border-radius: 0 0 30px 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; flex-shrink: 0; } 
-.app-title { margin: 0; font-size: 40px; background: linear-gradient(to right, #FF5252, #FF9800, #4CAF50, #2196F3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(3px 3px 0px rgba(0,0,0,0.2)); letter-spacing: 1px; } 
+.app-header { width: 100%; background: white; padding: 5px; text-align: center; border-bottom: 8px solid #FFCA28; border-radius: 0 0 25px 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; flex-shrink: 0; } 
+.app-title { margin: 0; font-size: 30px; background: linear-gradient(to right, #FF5252, #FF9800, #4CAF50, #2196F3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(3px 3px 0px rgba(0,0,0,0.2)); letter-spacing: 1px; } 
 
 /* --- WELCOME SYSTEM --- */ 
-.welcome-wrapper { margin-top: 70px; margin-bottom: 40px; width: 90%; max-width: 400px; position: relative; flex-shrink: 0; cursor: pointer; z-index: 9999; transition: opacity 1s ease; } 
+.welcome-wrapper { margin-top: 90px; margin-bottom: 40px; width: 90%; max-width: 400px; position: relative; flex-shrink: 0; cursor: pointer; z-index: 9999; } 
 .mascot-img { position: absolute; top: -90px; left: 50%; transform: translateX(-50%); width: 130px; height: auto; z-index: 10; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2)); } 
 .welcome-card-3d { background: linear-gradient(135deg, #FF9800, #FF5722); padding: 40px 15px 20px 15px; border-radius: 30px; text-align: center; border: 4px solid #fff; box-shadow: 0 12px 0 #E65100, 0 25px 25px rgba(0,0,0,0.2); color: white; position: relative; animation: floatCard 3s ease-in-out infinite; } 
 .welcome-main { font-size: 34px; margin: 10px 0 0 0; text-shadow: 2px 2px 0 rgba(0,0,0,0.2); } 
 .typing-container { font-size: 18px; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; display: inline-block; margin-top: 8px; border: 1px dashed rgba(255,255,255,0.6); } 
 @keyframes floatCard { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+
+/* --- IMPLOSION EFFECT (Biscuit Bomb) --- */
+.implode-effect {
+    transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+    transform: scale(0) rotate(720deg);
+    border-radius: 50%;
+    opacity: 0.5;
+}
 
 /* --- MENU & BUTTONS --- */ 
 .share-container { width: 90%; max-width: 400px; margin: 30px 0; flex-shrink: 0; } 
@@ -34,24 +100,27 @@ body { font-family: 'Bubblegum Sans', cursive; background-color: #E0F7FA; backgr
 .section-header { background: #fff; padding: 8px 25px; border-radius: 50px; color: #FF5722; font-size: 26px; margin: 20px 0 15px 0; box-shadow: 0 4px 0 #FFAB91; display: inline-block; } 
 .first-menu-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; width: 90%; max-width: 420px; margin-bottom: 10px; flex-shrink: 0; } 
 .menu-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 95%; max-width: 500px; margin-bottom: 20px; flex-shrink: 0; } 
-.menu-card { border-radius: 25px; padding: 15px 5px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 125px; position: relative; top: 0; transition: all 0.1s; border: 2px solid rgba(255,255,255,0.4); } 
+/* Card Background updated to be semi-transparent white for better contrast */
+.menu-card { border-radius: 25px; padding: 15px 5px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 125px; position: relative; top: 0; transition: all 0.1s; border: 2px solid rgba(255,255,255,0.6); background: rgba(255,255,255,0.85); backdrop-filter: blur(5px); } 
 .icon { font-size: 50px; margin-bottom: 5px; filter: drop-shadow(0 4px 2px rgba(0,0,0,0.2)); } 
 .card-title { font-size: 19px; font-weight: bold; margin: 0; text-shadow: 1px 1px 0 rgba(255,255,255,0.5); } 
-.card-red { background: linear-gradient(to bottom, #FFEBEE, #FFCDD2); box-shadow: 0 8px 0 #EF5350; color: #B71C1C; } 
+
+/* Button Colors (Updated shadows to look good on colorful BG) */
+.card-red { box-shadow: 0 8px 0 #EF5350; color: #B71C1C; } 
 .card-red:active { top: 8px; box-shadow: 0 0 0 #EF5350; } 
-.card-blue { background: linear-gradient(to bottom, #E3F2FD, #90CAF9); box-shadow: 0 8px 0 #42A5F5; color: #0D47A1; } 
+.card-blue { box-shadow: 0 8px 0 #42A5F5; color: #0D47A1; } 
 .card-blue:active { top: 8px; box-shadow: 0 0 0 #42A5F5; } 
-.card-green { background: linear-gradient(to bottom, #E8F5E9, #A5D6A7); box-shadow: 0 8px 0 #66BB6A; color: #1B5E20; } 
+.card-green { box-shadow: 0 8px 0 #66BB6A; color: #1B5E20; } 
 .card-green:active { top: 8px; box-shadow: 0 0 0 #66BB6A; } 
-.card-orange { background: linear-gradient(to bottom, #FFF3E0, #FFCC80); box-shadow: 0 8px 0 #FFA726; color: #E65100; } 
+.card-orange { box-shadow: 0 8px 0 #FFA726; color: #E65100; } 
 .card-orange:active { top: 8px; box-shadow: 0 0 0 #FFA726; } 
-.card-purple { background: linear-gradient(to bottom, #F3E5F5, #CE93D8); box-shadow: 0 8px 0 #AB47BC; color: #4A148C; } 
+.card-purple { box-shadow: 0 8px 0 #AB47BC; color: #4A148C; } 
 .card-purple:active { top: 8px; box-shadow: 0 0 0 #AB47BC; } 
-.card-yellow { background: linear-gradient(to bottom, #FFFDE7, #FFF59D); box-shadow: 0 8px 0 #FDD835; color: #F57F17; } 
+.card-yellow { box-shadow: 0 8px 0 #FDD835; color: #F57F17; } 
 .card-yellow:active { top: 8px; box-shadow: 0 0 0 #FDD835; } 
 
 /* SOCIAL & FOOTER */ 
-.social-section { width: 90%; max-width: 400px; background: #fff; border-radius: 25px; padding: 20px; text-align: center; margin-top: 20px; flex-shrink: 0; box-shadow: 0 10px 0 #CFD8DC, 0 20px 20px rgba(0,0,0,0.1); border: 2px solid #ECEFF1; } 
+.social-section { width: 90%; max-width: 400px; background: rgba(255,255,255,0.9); border-radius: 25px; padding: 20px; text-align: center; margin-top: 20px; flex-shrink: 0; box-shadow: 0 10px 0 #CFD8DC, 0 20px 20px rgba(0,0,0,0.1); border: 2px solid #ECEFF1; } 
 .social-title { margin: 0 0 15px 0; color: #FF5722; font-size: 24px; text-shadow: 1px 1px 0 #eee; } 
 .social-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; justify-items: center; } 
 .social-btn { width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 26px; text-decoration: none; border: 3px solid rgba(255,255,255,0.3); } 
@@ -82,13 +151,20 @@ body { font-family: 'Bubblegum Sans', cursive; background-color: #E0F7FA; backgr
 </head>
 <body>
 
+<div id="startOverlay">
+    <button class="play-btn-circle" onclick="startGame()">
+        <i class="fas fa-play"></i>
+    </button>
+    <div class="play-text">Tap to Play!</div>
+</div>
+
 <div class="app-header"> <h1 class="app-title">Little Master 🎓</h1> </div> 
 
-<div class="welcome-wrapper" id="welcomeBox" onclick="playWelcomeAudio()"> 
+<div class="welcome-wrapper" id="welcomeBox"> 
     <img src="Welcome.gif" id="welcomeGif" class="mascot-img" alt="Little Master"> 
     <div class="welcome-card-3d"> 
         <h2 class="welcome-main">Hello, Genius!</h2> 
-        <div class="typing-container"> <span id="typewriter">Tap here to Start...</span> </div> 
+        <div class="typing-container"> <span id="typewriter">Let's Learn & Play...</span> </div> 
     </div> 
 </div> 
 
@@ -202,36 +278,43 @@ body { font-family: 'Bubblegum Sans', cursive; background-color: #E0F7FA; backgr
 </div> 
 
 <script> 
-// --- FINAL SOUND LOGIC (SAME AS MONTHS.HTML) ---
 let audio = new Audio('welcome.mp3'); 
 let welcomeBox = document.getElementById('welcomeBox');
 
-// 1. Audio khatam hone par Welcome Box Gayab (Automatic)
-audio.onended = function() {
-    welcomeBox.style.opacity = '0';
-    setTimeout(function() {
-        welcomeBox.style.display = 'none';
-    }, 1000);
-};
+// 1. CLICK KARNE PAR: Button Gayab -> Sound Start
+function startGame() {
+    // Hide Overlay
+    document.getElementById('startOverlay').style.display = 'none';
+    
+    // Play Sound
+    audio.play();
 
-// 2. Play Function
-function playWelcomeAudio() {
-    audio.play().catch(function(e) {
-        console.log("Waiting for interaction...");
-    });
+    // Init Confetti (Celebrate Start)
+    if(typeof confetti === "function") {
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    }
 }
 
-// 3. Page load hote hi (500ms baad) sound play karo - (Exact months.html logic)
+// 2. SOUND KHATAM HONE PAR: SHRINK -> ROUND -> BOOM!
+audio.onended = function() {
+    // Phase 1: Shrink & Round (0.5s duration from CSS)
+    welcomeBox.classList.add("implode-effect");
+
+    // Phase 2: Wait for shrink to finish (450ms), then BOOM
+    setTimeout(function() {
+        // Boom Confetti
+        if(typeof confetti === "function") {
+            confetti({ particleCount: 250, spread: 120, origin: { y: 0.35 }, colors: ['#FFD700', '#FF0000', '#FFFFFF'] });
+        }
+        
+        // Remove Element
+        welcomeBox.style.display = 'none';
+    }, 450); 
+};
+
+// Start Typewriter effect immediately behind the popup
 window.onload = function() {
-    // Confetti
-    if(typeof confetti === "function") {
-        confetti({ particleCount: 150, spread: 80, origin: { y: 0.3 } });
-    }
-    // Typewriter
     typeEffect();
-    
-    // START AUDIO DELAY (Same as months.html)
-    setTimeout(playWelcomeAudio, 500);
 };
 
 function openGame(pageName) { window.location.href = pageName; } 
@@ -240,7 +323,7 @@ function closeShareModal() { document.getElementById('sharePopup').style.display
 
 // Typewriter
 const textElement = document.getElementById("typewriter"); 
-const texts = ["Tap here to Start...", "Welcome Kid...", "Let's Play!"]; 
+const texts = ["Tap to Start...", "Welcome Kid...", "Let's Play!"]; 
 let textIndex = 0; 
 let charIndex = 0; 
 let isDeleting = false; 
