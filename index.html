@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -14,11 +13,15 @@
 <style> 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; } 
 
-/* --- 🔥 NEW LIVE BACKGROUND (FLOATING SHAPES) 🔥 --- */
+/* --- 🔥 LIVE MOVING GRADIENT BACKGROUND 🔥 --- */
 body { 
     font-family: 'Bubblegum Sans', cursive; 
-    /* Soft Sunny Sky Gradient Base */
-    background: linear-gradient(180deg, #E0F7FA 0%, #FFF3E0 100%);
+    
+    /* Ye wahi Colorful Gradient hai jo aapne photo mein dikhaya */
+    background: linear-gradient(-45deg, #FF9A9E, #FECFEF, #A18CD1, #84FAB0, #8FD3F4);
+    background-size: 400% 400%;
+    animation: gradientBG 10s ease infinite; /* 10 second mein colors badlenge */
+    
     min-height: 100vh; 
     margin: 0; 
     display: flex; 
@@ -28,47 +31,13 @@ body {
     overflow-y: auto; 
     color: #333; 
     padding-bottom: 80px; 
-    position: relative;
 } 
 
-/* Animation Container */
-.live-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    z-index: -1; /* Behind everything */
-    pointer-events: none;
-}
-
-.shape {
-    position: absolute;
-    display: block;
-    list-style: none;
-    width: 20px;
-    height: 20px;
-    bottom: -150px;
-    animation: floatUp 15s linear infinite;
-    opacity: 0.7;
-}
-
-/* Colorful Shapes Configuration */
-.shape:nth-child(1) { left: 25%; width: 80px; height: 80px; background: #FF5252; border-radius: 50%; animation-delay: 0s; } /* Red Circle */
-.shape:nth-child(2) { left: 10%; width: 40px; height: 40px; background: #FFD740; border-radius: 10%; animation-delay: 2s; animation-duration: 12s; } /* Yellow Square */
-.shape:nth-child(3) { left: 70%; width: 60px; height: 60px; background: #448AFF; border-radius: 50%; animation-delay: 4s; } /* Blue Circle */
-.shape:nth-child(4) { left: 40%; width: 90px; height: 90px; background: #69F0AE; border-radius: 15%; animation-delay: 0s; animation-duration: 18s; } /* Green Square */
-.shape:nth-child(5) { left: 65%; width: 50px; height: 50px; background: #E040FB; border-radius: 50%; animation-delay: 0s; } /* Purple Circle */
-.shape:nth-child(6) { left: 85%; width: 100px; height: 100px; background: #FF6E40; border-radius: 20%; animation-delay: 3s; } /* Orange Square */
-.shape:nth-child(7) { left: 15%; width: 70px; height: 70px; background: #00E676; border-radius: 50%; animation-delay: 7s; } /* Green Circle */
-.shape:nth-child(8) { left: 50%; width: 45px; height: 45px; background: #29B6F6; border-radius: 10%; animation-delay: 15s; animation-duration: 25s; } /* Blue Square */
-.shape:nth-child(9) { left: 20%; width: 35px; height: 35px; background: #FFAB00; border-radius: 50%; animation-delay: 2s; animation-duration: 20s; } /* Amber Circle */
-.shape:nth-child(10){ left: 80%; width: 85px; height: 85px; background: #FF4081; border-radius: 15%; animation-delay: 11s; } /* Pink Square */
-
-@keyframes floatUp {
-    0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
-    100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; }
+/* Animation Logic */
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 /* --- START OVERLAY (POPUP) --- */
@@ -102,7 +71,7 @@ body {
 .typing-container { font-size: 18px; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; display: inline-block; margin-top: 8px; border: 1px dashed rgba(255,255,255,0.6); } 
 @keyframes floatCard { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
 
-/* --- IMPLOSION EFFECT --- */
+/* --- IMPLOSION EFFECT (Biscuit Bomb) --- */
 .implode-effect {
     transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045);
     transform: scale(0) rotate(720deg);
@@ -117,25 +86,27 @@ body {
 .section-header { background: #fff; padding: 8px 25px; border-radius: 50px; color: #FF5722; font-size: 26px; margin: 20px 0 15px 0; box-shadow: 0 4px 0 #FFAB91; display: inline-block; } 
 .first-menu-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; width: 90%; max-width: 420px; margin-bottom: 10px; flex-shrink: 0; } 
 .menu-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 95%; max-width: 500px; margin-bottom: 20px; flex-shrink: 0; } 
-.menu-card { border-radius: 25px; padding: 15px 5px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 125px; position: relative; top: 0; transition: all 0.1s; border: 2px solid rgba(255,255,255,0.4); background: rgba(255,255,255,0.7); /* Slightly transparent for better visibility */ } 
+/* Card Background updated to be semi-transparent white for better contrast */
+.menu-card { border-radius: 25px; padding: 15px 5px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 125px; position: relative; top: 0; transition: all 0.1s; border: 2px solid rgba(255,255,255,0.6); background: rgba(255,255,255,0.85); backdrop-filter: blur(5px); } 
 .icon { font-size: 50px; margin-bottom: 5px; filter: drop-shadow(0 4px 2px rgba(0,0,0,0.2)); } 
 .card-title { font-size: 19px; font-weight: bold; margin: 0; text-shadow: 1px 1px 0 rgba(255,255,255,0.5); } 
 
-.card-red { background: linear-gradient(to bottom, #FFEBEE, #FFCDD2); box-shadow: 0 8px 0 #EF5350; color: #B71C1C; } 
+/* Button Colors (Updated shadows to look good on colorful BG) */
+.card-red { box-shadow: 0 8px 0 #EF5350; color: #B71C1C; } 
 .card-red:active { top: 8px; box-shadow: 0 0 0 #EF5350; } 
-.card-blue { background: linear-gradient(to bottom, #E3F2FD, #90CAF9); box-shadow: 0 8px 0 #42A5F5; color: #0D47A1; } 
+.card-blue { box-shadow: 0 8px 0 #42A5F5; color: #0D47A1; } 
 .card-blue:active { top: 8px; box-shadow: 0 0 0 #42A5F5; } 
-.card-green { background: linear-gradient(to bottom, #E8F5E9, #A5D6A7); box-shadow: 0 8px 0 #66BB6A; color: #1B5E20; } 
+.card-green { box-shadow: 0 8px 0 #66BB6A; color: #1B5E20; } 
 .card-green:active { top: 8px; box-shadow: 0 0 0 #66BB6A; } 
-.card-orange { background: linear-gradient(to bottom, #FFF3E0, #FFCC80); box-shadow: 0 8px 0 #FFA726; color: #E65100; } 
+.card-orange { box-shadow: 0 8px 0 #FFA726; color: #E65100; } 
 .card-orange:active { top: 8px; box-shadow: 0 0 0 #FFA726; } 
-.card-purple { background: linear-gradient(to bottom, #F3E5F5, #CE93D8); box-shadow: 0 8px 0 #AB47BC; color: #4A148C; } 
+.card-purple { box-shadow: 0 8px 0 #AB47BC; color: #4A148C; } 
 .card-purple:active { top: 8px; box-shadow: 0 0 0 #AB47BC; } 
-.card-yellow { background: linear-gradient(to bottom, #FFFDE7, #FFF59D); box-shadow: 0 8px 0 #FDD835; color: #F57F17; } 
+.card-yellow { box-shadow: 0 8px 0 #FDD835; color: #F57F17; } 
 .card-yellow:active { top: 8px; box-shadow: 0 0 0 #FDD835; } 
 
 /* SOCIAL & FOOTER */ 
-.social-section { width: 90%; max-width: 400px; background: #fff; border-radius: 25px; padding: 20px; text-align: center; margin-top: 20px; flex-shrink: 0; box-shadow: 0 10px 0 #CFD8DC, 0 20px 20px rgba(0,0,0,0.1); border: 2px solid #ECEFF1; } 
+.social-section { width: 90%; max-width: 400px; background: rgba(255,255,255,0.9); border-radius: 25px; padding: 20px; text-align: center; margin-top: 20px; flex-shrink: 0; box-shadow: 0 10px 0 #CFD8DC, 0 20px 20px rgba(0,0,0,0.1); border: 2px solid #ECEFF1; } 
 .social-title { margin: 0 0 15px 0; color: #FF5722; font-size: 24px; text-shadow: 1px 1px 0 #eee; } 
 .social-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; justify-items: center; } 
 .social-btn { width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 26px; text-decoration: none; border: 3px solid rgba(255,255,255,0.3); } 
@@ -165,19 +136,6 @@ body {
 </style>
 </head>
 <body>
-
-<ul class="live-background">
-    <li class="shape"></li>
-    <li class="shape"></li>
-    <li class="shape"></li>
-    <li class="shape"></li>
-    <li class="shape"></li>
-    <li class="shape"></li>
-    <li class="shape"></li>
-    <li class="shape"></li>
-    <li class="shape"></li>
-    <li class="shape"></li>
-</ul>
 
 <div id="startOverlay">
     <button class="play-btn-circle" onclick="startGame()">
@@ -399,3 +357,4 @@ function shareTo(platform) {
 
 </body>
 </html>
+
