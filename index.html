@@ -15,9 +15,22 @@
 
 body { 
     font-family: 'Bubblegum Sans', cursive; 
+    
+    /* Gradient Background */
     background: linear-gradient(-45deg, #FF9A9E, #FECFEF, #A18CD1, #84FAB0, #8FD3F4);
     background-size: 400% 400%;
-    animation: gradientBG 10s ease infinite; 
+    
+    /* Ye line blinking rokegi (Background ko fix karti hai) */
+    background-attachment: fixed; 
+    
+    /* Animation settings */
+    animation: gradientBG 15s ease infinite; 
+    
+    /* Hardware Acceleration (Magic Line for Mobile) */
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+    
+    /* Layout Settings */
     min-height: 100vh; 
     margin: 0; 
     display: flex; 
@@ -26,6 +39,20 @@ body {
     overflow-x: hidden; 
     padding-bottom: 80px; 
 } 
+
+/* Animation Keyframes (Zaroori hai) */
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
 
 body.stop-scrolling { height: 100vh; overflow: hidden; }
 
