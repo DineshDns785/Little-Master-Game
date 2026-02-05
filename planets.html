@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Planets Quiz: Magic Colors</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
+
+<style> 
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; } 
+
+/* FIXED BACKGROUND */
+#fixed-bg {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -999; 
+    background: linear-gradient(135deg, #000000, #1e3c72, #2a5298);
+    background-size: 400% 400%;
+    animation: gradientBG 20s ease infinite;
+    will-change: background-position;
+    transform: translate3d(0,0,0); 
+}
+@keyframes gradientBG { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+body {
+    font-family: 'Bubblegum Sans', cursive;
+    margin: 0; padding: 0;
+    display: flex; flex-direction: column; align-items: center;
+    height: 100vh; overflow: hidden;
+}
+
+/* HEADER */
+.app-header { 
+    width: 100%; background: rgba(255,255,255,0.9); padding: 10px 15px; display: flex; align-items: center;
+    border-bottom: 4px solid #FFD700; border-radius: 0 0 20px 20px; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 1000; flex-shrink: 0;
+} 
+.back-btn { font-size: 24px; color: #ff7675; background: none; border: none; cursor: pointer; margin-right: 15px; }
+.app-title { flex-grow: 1; margin: 0; font-size: 24px; text-align: center; color: #2d3436; margin-right: 40px; } 
+
+/* MASCOT */
+#mascot-img {
+    position: fixed;
+    top: 55px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90px;
+    height: auto;
+    z-index: 3000;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+    pointer-events: none;
+}
+
+/* GAME CONTAINER */
+.game-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    padding-top: 60px;
+}
+
+/* --- MAIN BIG BOX --- */
+.target-container {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 35px;
+    padding: 15px;
+    border: 3px solid rgba(255,255,255,0.4);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    text-align: center;
+    width: 95%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    backdrop-filter: blur(10px);
+}
+
+.big-planet-img {
+    width: 130px;
+    height: 130px;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5));
+    margin-bottom: 5px;
+    animation: float 3s ease-in-out infinite;
+}
+.big-emoji { font-size: 90px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); margin-bottom: 5px; display: none; }
+
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+/* --- NAMES ROW --- */
+.names-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 10px;
+    margin-bottom: 15px;
+    border-bottom: 2px dashed rgba(255,255,255,0.3);
+    padding-bottom: 8px;
+}
+.name-eng { font-size: 28px; color: #fff; text-shadow: 2px 2px 0 #000; text-transform: uppercase; font-weight: bold; }
+.name-hin { font-size: 28px; color: #FFD700; text-shadow: 2px 2px 0 #000; font-weight: bold; }
+
+/* --- 4 OPTIONS GRID --- */
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    padding: 5px;
+}
+
+/* 3D Button Style */
+.option-card {
+    border-radius: 20px;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 95px;
+    position: relative;
+    border-width: 3px;
+    border-style: solid;
+    border-bottom-width: 7px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: transform 0.1s;
+    
+    /* Animation Lagayi Hai */
+    animation: colorCycle 6s infinite alternate; 
+}
+
+.option-card:active {
+    transform: translateY(5px);
+    border-bottom-width: 3px;
+    box-shadow: none;
+}
+
+/* --- AUTOMATIC COLOR CHANGING ANIMATION --- */
+@keyframes colorCycle {
+    0% {
+        background: #E3F2FD; /* Light Blue */
+        border-color: #64B5F6;
+        border-bottom-color: #1976D2;
+    }
+    33% {
+        background: #FFEBEE; /* Light Pink */
+        border-color: #E57373;
+        border-bottom-color: #D32F2F;
+    }
+    66% {
+        background: #FFFDE7; /* Light Yellow */
+        border-color: #FFF176;
+        border-bottom-color: #FBC02D;
+    }
+    100% {
+        background: #E8F5E9; /* Light Green */
+        border-color: #81C784;
+        border-bottom-color: #388E3C;
+    }
+}
+
+/* Har button ka animation thoda aage-peeche chalega taaki same na dikhe */
+.option-card:nth-child(1) { animation-delay: 0s; }
+.option-card:nth-child(2) { animation-delay: 1.5s; }
+.option-card:nth-child(3) { animation-delay: 3s; }
+.option-card:nth-child(4) { animation-delay: 4.5s; }
+
+.option-img { width: 75px; height: 75px; object-fit: contain; pointer-events: none; }
+.option-emoji { font-size: 55px; display: none; pointer-events: none; } 
+
+/* Sahi Jawab: Solid Green */
+.correct-anim { 
+    background: #00E676 !important; 
+    border-color: #00C853 !important; 
+    border-bottom-color: #005005 !important;
+    animation: bounce 0.5s !important; /* Override color cycle */
+}
+@keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+/* Galat Jawab: Solid Red */
+.wrong-anim { 
+    background: #FF1744 !important; 
+    border-color: #D50000 !important; 
+    border-bottom-color: #8a0000 !important;
+    animation: shake 0.4s !important; /* Override color cycle */
+}
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+
+/* START BUTTON */
+#start-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9); z-index: 5000;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+}
+.start-btn {
+    background: #ff7675; color: white; border: 4px solid white;
+    padding: 20px 40px; font-size: 30px; border-radius: 50px;
+    font-family: inherit; cursor: pointer; animation: pulse 1.5s infinite;
+}
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+</style>
+</head>
+<body> 
+
+<div id="start-overlay" onclick="startGame()">
+    <button class="start-btn">▶️ Play Quiz</button>
+</div>
+
+<div id="fixed-bg"></div>
+<img id="mascot-img" src="talkingof.png" alt="Mascot">
+
+<div class="app-header"> 
+    <button class="back-btn" onclick="goHome()"><i class="fas fa-arrow-left"></i></button>
+    <h1 class="app-title">Find the Planet 🪐</h1> 
+</div> 
+
+<div class="game-area">
+    
+    <div class="target-container">
+        
+        <img id="target-img" src="" class="big-planet-img" onerror="useEmoji(this)">
+        <div id="target-emoji" class="big-emoji"></div>
+        
+        <div class="names-row">
+            <div id="target-eng" class="name-eng"></div>
+            <div id="target-hin" class="name-hin"></div>
+        </div>
+
+        <div class="options-grid" id="options-box">
+            </div>
+    </div>
+
+</div> 
+
+<script>
+    // --- DATA ---
+    const planets = [
+        { id: 'sun', en: 'Sun', hi: 'सूरज', img: 'images/sun.png', emoji: '☀️', audio: 'Sunplanets.mp3' },
+        { id: 'mercury', en: 'Mercury', hi: 'बुध', img: 'images/mercury.png', emoji: '🌑', audio: 'Mercuryplanets.mp3' },
+        { id: 'venus', en: 'Venus', hi: 'शुक्र', img: 'images/venus.png', emoji: '🌕', audio: 'Venusplanets.mp3' },
+        { id: 'earth', en: 'Earth', hi: 'पृथ्वी', img: 'images/earth.png', emoji: '🌍', audio: 'Earthplanets.mp3' },
+        { id: 'mars', en: 'Mars', hi: 'मंगल', img: 'images/mars.png', emoji: '🔴', audio: 'Marsplanets.mp3' },
+        { id: 'jupiter', en: 'Jupiter', hi: 'बृहस्पति', img: 'images/jupiter.png', emoji: '🟠', audio: 'Jupiterplanets.mp3' },
+        { id: 'saturn', en: 'Saturn', hi: 'शनि', img: 'images/saturn.png', emoji: '🪐', audio: 'Saturnplanets.mp3' },
+        { id: 'uranus', en: 'Uranus', hi: 'अरुण', img: 'images/uranus.png', emoji: '🔵', audio: 'Uranusplanets.mp3' },
+        { id: 'neptune', en: 'Neptune', hi: 'वरुण', img: 'images/neptune.png', emoji: '🥶', audio: 'Neptuneplanets.mp3' },
+        { id: 'moon', en: 'Moon', hi: 'चंदा मामा', img: 'images/moon.png', emoji: '🌙', audio: 'Moonplanets.mp3' }
+    ];
+
+    let currentTarget = null;
+    let currentAudio = null;
+    let mascot = document.getElementById('mascot-img');
+    let isGameActive = false;
+
+    function goHome() { window.location.href = 'index.html'; }
+
+    function startGame() {
+        document.getElementById('start-overlay').style.display = 'none';
+        isGameActive = true;
+        loadNewLevel();
+    }
+
+    // --- GAME LOGIC ---
+    function loadNewLevel() {
+        if (!isGameActive) return;
+
+        // 1. Pick Random Target
+        let targetIndex = Math.floor(Math.random() * planets.length);
+        currentTarget = planets[targetIndex];
+
+        // 2. Set Big Image & Names
+        document.getElementById('target-img').style.display = 'block';
+        document.getElementById('target-emoji').style.display = 'none';
+        
+        document.getElementById('target-img').src = currentTarget.img;
+        document.getElementById('target-eng').innerText = currentTarget.en;
+        document.getElementById('target-hin').innerText = currentTarget.hi;
+
+        // 3. Play Sound
+        playAudio(currentTarget.audio);
+
+        // 4. Generate 4 Options
+        let options = [currentTarget];
+        while (options.length < 4) {
+            let randomP = planets[Math.floor(Math.random() * planets.length)];
+            if (!options.includes(randomP)) options.push(randomP);
+        }
+        options.sort(() => Math.random() - 0.5);
+
+        // 5. Render Buttons
+        const optionsBox = document.getElementById('options-box');
+        optionsBox.innerHTML = '';
+
+        options.forEach(planet => {
+            let btn = document.createElement('div');
+            btn.className = 'option-card';
+            btn.onclick = () => checkAnswer(planet, btn);
+            
+            // Image with Emoji Fallback
+            let imgHTML = `<img src="${planet.img}" class="option-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">`;
+            let emojiHTML = `<div class="option-emoji">${planet.emoji}</div>`;
+            
+            btn.innerHTML = imgHTML + emojiHTML;
+            optionsBox.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selected, btnElement) {
+        if (selected.id === currentTarget.id) {
+            // CORRECT
+            btnElement.classList.add('correct-anim');
+            playSystemSound('correct'); 
+            setTimeout(() => { loadNewLevel(); }, 1000);
+        } else {
+            // WRONG
+            btnElement.classList.add('wrong-anim');
+            playSystemSound('wrong'); 
+            setTimeout(() => { btnElement.classList.remove('wrong-anim'); }, 500);
+        }
+    }
+
+    // --- AUDIO SYSTEM ---
+    function playAudio(filename) {
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+            mascot.src = 'talkingof.png'; 
+        }
+        
+        currentAudio = new Audio(filename);
+        
+        currentAudio.play().then(() => {
+            mascot.src = 'talkingof.gif'; 
+        }).catch(e => console.log("Audio Error: " + e));
+
+        currentAudio.onended = function() {
+            mascot.src = 'talkingof.png';
+        };
+    }
+
+    function playSystemSound(type) {
+        if (navigator.vibrate) {
+            if (type === 'wrong') navigator.vibrate(200);
+            else navigator.vibrate(50);
+        }
+    }
+
+    window.useEmoji = function(imgElement) {
+        imgElement.style.display = 'none';
+        document.getElementById('target-emoji').innerText = currentTarget.emoji;
+        document.getElementById('target-emoji').style.display = 'block';
+    }
+
+</script>
+
+</body>
+</html>
