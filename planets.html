@@ -38,7 +38,7 @@ body {
 .back-btn { font-size: 24px; color: #ff7675; background: none; border: none; cursor: pointer; margin-right: 15px; }
 .app-title { flex-grow: 1; margin: 0; font-size: 24px; text-align: center; color: #2d3436; margin-right: 40px; } 
 
-/* MASCOT */
+/* MASCOT (Fixed Top Center) */
 #mascot-img {
     position: fixed;
     top: 55px;
@@ -79,6 +79,7 @@ body {
     backdrop-filter: blur(10px);
 }
 
+/* Big Planet Image */
 .big-planet-img {
     width: 130px;
     height: 130px;
@@ -129,8 +130,6 @@ body {
     box-shadow: 0 5px 10px rgba(0,0,0,0.2);
     cursor: pointer;
     transition: transform 0.1s;
-    
-    /* Animation Lagayi Hai */
     animation: colorCycle 6s infinite alternate; 
 }
 
@@ -142,29 +141,12 @@ body {
 
 /* --- AUTOMATIC COLOR CHANGING ANIMATION --- */
 @keyframes colorCycle {
-    0% {
-        background: #E3F2FD; /* Light Blue */
-        border-color: #64B5F6;
-        border-bottom-color: #1976D2;
-    }
-    33% {
-        background: #FFEBEE; /* Light Pink */
-        border-color: #E57373;
-        border-bottom-color: #D32F2F;
-    }
-    66% {
-        background: #FFFDE7; /* Light Yellow */
-        border-color: #FFF176;
-        border-bottom-color: #FBC02D;
-    }
-    100% {
-        background: #E8F5E9; /* Light Green */
-        border-color: #81C784;
-        border-bottom-color: #388E3C;
-    }
+    0% { background: #E3F2FD; border-color: #64B5F6; border-bottom-color: #1976D2; }
+    33% { background: #FFEBEE; border-color: #E57373; border-bottom-color: #D32F2F; }
+    66% { background: #FFFDE7; border-color: #FFF176; border-bottom-color: #FBC02D; }
+    100% { background: #E8F5E9; border-color: #81C784; border-bottom-color: #388E3C; }
 }
 
-/* Har button ka animation thoda aage-peeche chalega taaki same na dikhe */
 .option-card:nth-child(1) { animation-delay: 0s; }
 .option-card:nth-child(2) { animation-delay: 1.5s; }
 .option-card:nth-child(3) { animation-delay: 3s; }
@@ -173,21 +155,16 @@ body {
 .option-img { width: 75px; height: 75px; object-fit: contain; pointer-events: none; }
 .option-emoji { font-size: 55px; display: none; pointer-events: none; } 
 
-/* Sahi Jawab: Solid Green */
+/* Feedback Animations */
 .correct-anim { 
-    background: #00E676 !important; 
-    border-color: #00C853 !important; 
-    border-bottom-color: #005005 !important;
-    animation: bounce 0.5s !important; /* Override color cycle */
+    background: #00E676 !important; border-color: #00C853 !important; 
+    border-bottom-color: #005005 !important; animation: bounce 0.5s !important; 
 }
 @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 
-/* Galat Jawab: Solid Red */
 .wrong-anim { 
-    background: #FF1744 !important; 
-    border-color: #D50000 !important; 
-    border-bottom-color: #8a0000 !important;
-    animation: shake 0.4s !important; /* Override color cycle */
+    background: #FF1744 !important; border-color: #D50000 !important; 
+    border-bottom-color: #8a0000 !important; animation: shake 0.4s !important; 
 }
 @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
 
@@ -240,17 +217,18 @@ body {
 
 <script>
     // --- DATA ---
+    // Note: 'img' is now just 'earth.png' (No 'images/' folder needed if all in same place)
     const planets = [
-        { id: 'sun', en: 'Sun', hi: 'सूरज', img: 'images/sun.png', emoji: '☀️', audio: 'Sunplanets.mp3' },
-        { id: 'mercury', en: 'Mercury', hi: 'बुध', img: 'images/mercury.png', emoji: '🌑', audio: 'Mercuryplanets.mp3' },
-        { id: 'venus', en: 'Venus', hi: 'शुक्र', img: 'images/venus.png', emoji: '🌕', audio: 'Venusplanets.mp3' },
-        { id: 'earth', en: 'Earth', hi: 'पृथ्वी', img: 'images/earth.png', emoji: '🌍', audio: 'Earthplanets.mp3' },
-        { id: 'mars', en: 'Mars', hi: 'मंगल', img: 'images/mars.png', emoji: '🔴', audio: 'Marsplanets.mp3' },
-        { id: 'jupiter', en: 'Jupiter', hi: 'बृहस्पति', img: 'images/jupiter.png', emoji: '🟠', audio: 'Jupiterplanets.mp3' },
-        { id: 'saturn', en: 'Saturn', hi: 'शनि', img: 'images/saturn.png', emoji: '🪐', audio: 'Saturnplanets.mp3' },
-        { id: 'uranus', en: 'Uranus', hi: 'अरुण', img: 'images/uranus.png', emoji: '🔵', audio: 'Uranusplanets.mp3' },
-        { id: 'neptune', en: 'Neptune', hi: 'वरुण', img: 'images/neptune.png', emoji: '🥶', audio: 'Neptuneplanets.mp3' },
-        { id: 'moon', en: 'Moon', hi: 'चंदा मामा', img: 'images/moon.png', emoji: '🌙', audio: 'Moonplanets.mp3' }
+        { id: 'sun', en: 'Sun', hi: 'सूरज', img: 'sun.png', emoji: '☀️', audio: 'Sunplanets.mp3' },
+        { id: 'mercury', en: 'Mercury', hi: 'बुध', img: 'mercury.png', emoji: '🌑', audio: 'Mercuryplanets.mp3' },
+        { id: 'venus', en: 'Venus', hi: 'शुक्र', img: 'venus.png', emoji: '🌕', audio: 'Venusplanets.mp3' },
+        { id: 'earth', en: 'Earth', hi: 'पृथ्वी', img: 'earth.png', emoji: '🌍', audio: 'Earthplanets.mp3' },
+        { id: 'mars', en: 'Mars', hi: 'मंगल', img: 'mars.png', emoji: '🔴', audio: 'Marsplanets.mp3' },
+        { id: 'jupiter', en: 'Jupiter', hi: 'बृहस्पति', img: 'jupiter.png', emoji: '🟠', audio: 'Jupiterplanets.mp3' },
+        { id: 'saturn', en: 'Saturn', hi: 'शनि', img: 'saturn.png', emoji: '🪐', audio: 'Saturnplanets.mp3' },
+        { id: 'uranus', en: 'Uranus', hi: 'अरुण', img: 'uranus.png', emoji: '🔵', audio: 'Uranusplanets.mp3' },
+        { id: 'neptune', en: 'Neptune', hi: 'वरुण', img: 'neptune.png', emoji: '🥶', audio: 'Neptuneplanets.mp3' },
+        { id: 'moon', en: 'Moon', hi: 'चंदा मामा', img: 'moon.png', emoji: '🌙', audio: 'Moonplanets.mp3' }
     ];
 
     let currentTarget = null;
@@ -270,11 +248,10 @@ body {
     function loadNewLevel() {
         if (!isGameActive) return;
 
-        // 1. Pick Random Target
         let targetIndex = Math.floor(Math.random() * planets.length);
         currentTarget = planets[targetIndex];
 
-        // 2. Set Big Image & Names
+        // Set Big Image & Names
         document.getElementById('target-img').style.display = 'block';
         document.getElementById('target-emoji').style.display = 'none';
         
@@ -282,10 +259,8 @@ body {
         document.getElementById('target-eng').innerText = currentTarget.en;
         document.getElementById('target-hin').innerText = currentTarget.hi;
 
-        // 3. Play Sound
         playAudio(currentTarget.audio);
 
-        // 4. Generate 4 Options
         let options = [currentTarget];
         while (options.length < 4) {
             let randomP = planets[Math.floor(Math.random() * planets.length)];
@@ -293,7 +268,6 @@ body {
         }
         options.sort(() => Math.random() - 0.5);
 
-        // 5. Render Buttons
         const optionsBox = document.getElementById('options-box');
         optionsBox.innerHTML = '';
 
@@ -313,12 +287,10 @@ body {
 
     function checkAnswer(selected, btnElement) {
         if (selected.id === currentTarget.id) {
-            // CORRECT
             btnElement.classList.add('correct-anim');
             playSystemSound('correct'); 
             setTimeout(() => { loadNewLevel(); }, 1000);
         } else {
-            // WRONG
             btnElement.classList.add('wrong-anim');
             playSystemSound('wrong'); 
             setTimeout(() => { btnElement.classList.remove('wrong-anim'); }, 500);
@@ -351,6 +323,7 @@ body {
         }
     }
 
+    // Fallback if image fails
     window.useEmoji = function(imgElement) {
         imgElement.style.display = 'none';
         document.getElementById('target-emoji').innerText = currentTarget.emoji;
